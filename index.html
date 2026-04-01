@@ -398,22 +398,23 @@ function joinGame(){
 }
 
 /* ===== GAME STATE ===== */
-function initBoard(){
+  function initBoard(){
   const board=Array.from({length:ROWS},()=>Array(COLS).fill(null));
-  // P1 (blanc) : bouteille (5,0), capsules (5,1)-(5,4)
-  board[5][0]={t:'bottle',p:'p1'};
-  board[5][1]={t:'cap',p:'p1'};
-  board[5][2]={t:'cap',p:'p1'};
-  board[5][3]={t:'cap',p:'p1'};
-  board[5][4]={t:'cap',p:'p1'};
-  // P2 (noir) : bouteille (0,5), capsules (0,1)-(0,4)
-  board[0][5]={t:'bottle',p:'p2'};
-  board[0][1]={t:'cap',p:'p2'};
-  board[0][2]={t:'cap',p:'p2'};
+  // P2 (noir) : bouteille (0,0), capsules en diagonale
+  board[0][0]={t:'bottle',p:'p2'};
   board[0][3]={t:'cap',p:'p2'};
-  board[0][4]={t:'cap',p:'p2'};
+  board[1][2]={t:'cap',p:'p2'};
+  board[2][1]={t:'cap',p:'p2'};
+  board[3][0]={t:'cap',p:'p2'};
+  // P1 (blanc) : bouteille (5,5), capsules en diagonale
+  board[5][5]={t:'bottle',p:'p1'};
+  board[2][5]={t:'cap',p:'p1'};
+  board[3][4]={t:'cap',p:'p1'};
+  board[4][3]={t:'cap',p:'p1'};
+  board[5][2]={t:'cap',p:'p1'};
   return{board:board,turn:'p1',over:false,winner:null};
 }
+
 
 /* ===== ADJACENCY COUNT ===== */
 function countAdj(board,r,c){
