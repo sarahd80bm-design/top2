@@ -17,18 +17,19 @@ header p{font-style:italic;color:#a08860;font-size:.9rem;margin-top:2px}
 .tab-btn{background:transparent;border:1px solid rgba(212,160,23,.3);border-radius:6px;padding:7px 18px;color:#a08860;font-family:'Bebas Neue',sans-serif;font-size:.95rem;cursor:pointer;transition:all .2s}
 .tab-btn.active,.tab-btn:hover{background:rgba(212,160,23,.15);color:var(--gold);border-color:var(--gold)}
 .input-group{margin-bottom:14px}
-.input-group label{display:block;font-size:.82rem;color:#a08860;margin-bottom:4px;letter-spacing:.05em}
-.input-group input,.input-group select{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(212,160,23,.25);border-radius:6px;padding:9px 12px;color:var(--cream);font-family:'Crimson Pro',serif;font-size:1rem;outline:none;transition:border .2s}
+.input-group label{display:block;font-size:.82rem;color:#a08860;margin-bottom:4px;letter-spacing:.04em}
+.input-group input,.input-group select{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(212,160,23,.3);border-radius:6px;padding:9px 12px;color:var(--cream);font-family:'Crimson Pro',serif;font-size:1rem;outline:none;transition:border-color .2s}
 .input-group input:focus,.input-group select:focus{border-color:var(--gold)}
-.input-group select option{background:#2d1f00}
-.btn{background:linear-gradient(135deg,var(--wood-light),var(--wood));border:none;border-radius:8px;padding:10px 28px;color:#1a0f00;font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.08em;cursor:pointer;transition:all .2s;box-shadow:0 3px 10px rgba(0,0,0,.4)}
-.btn:hover{background:linear-gradient(135deg,#d4a830,var(--wood-light));transform:translateY(-1px)}
-.btn.sm{padding:7px 18px;font-size:.9rem}
-.btn.sec{background:transparent;border:1px solid rgba(212,160,23,.4);color:var(--gold)}
-.btn.danger{background:linear-gradient(135deg,#c0392b,#922b21);color:#fff}
-.btn.danger:hover{background:linear-gradient(135deg,#e74c3c,#c0392b)}
+.input-group select option{background:#1a1209}
+.btn{background:linear-gradient(135deg,var(--wood),var(--wood-dark));border:none;border-radius:8px;padding:11px 28px;color:var(--cream);font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:.08em;cursor:pointer;transition:all .2s;box-shadow:0 3px 10px rgba(0,0,0,.3)}
+.btn:hover{background:linear-gradient(135deg,var(--wood-light),var(--wood));transform:translateY(-1px)}
+.btn.sm{padding:7px 16px;font-size:.88rem}
+.btn.sec{background:rgba(212,160,23,.1);border:1px solid rgba(212,160,23,.4);color:var(--gold)}
+.btn.sec:hover{background:rgba(212,160,23,.2)}
+.btn.danger{background:rgba(192,57,43,.2);border:1px solid rgba(192,57,43,.5);color:#e74c3c}
+.btn.danger:hover{background:rgba(192,57,43,.35)}
 .note{font-size:.82rem;color:#a08860;text-align:center;margin:6px 0}
-.sep{height:1px;background:rgba(212,160,23,.15);margin:12px 0}
+.sep{border:none;border-top:1px solid rgba(212,160,23,.15);margin:10px 0}
 .blink{animation:blink 1.2s ease-in-out infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 #room-code-box{background:rgba(212,160,23,.1);border:1px dashed var(--gold);border-radius:8px;padding:10px;margin:12px 0;font-family:'Bebas Neue',sans-serif;font-size:2.8rem;letter-spacing:.25em;color:var(--gold);text-align:center}
@@ -43,24 +44,21 @@ header p{font-style:italic;color:#a08860;font-size:.9rem;margin-top:2px}
 #turn-indicator{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.1em;color:var(--gold);text-align:center;min-height:26px}
 #message{font-style:italic;color:#a08860;text-align:center;font-size:.9rem;min-height:20px}
 #board-wrap{position:relative;width:min(94vw,460px);aspect-ratio:1}
-#board{width:100%;height:100%;background:#8B6914;background-image:linear-gradient(135deg,#a07820 25%,transparent 25%),linear-gradient(225deg,#a07820 25%,transparent 25%),linear-gradient(315deg,#a07820 25%,transparent 25%),linear-gradient(45deg,#a07820 25%,transparent 25%);background-size:8px 8px;border-radius:4px;box-shadow:0 8px 40px rgba(0,0,0,.7),inset 0 0 0 3px rgba(255,255,255,.08);position:relative;overflow:hidden}
-.board-inner{position:absolute;inset:0;display:grid}
-.cell{border:1px solid rgba(0,0,0,.25);position:relative;cursor:pointer;transition:background .15s;display:flex;align-items:center;justify-content:center}
-.cell:hover{background:rgba(255,255,255,.08)}
-.cell.hl{background:rgba(39,174,96,.35)!important;border-color:rgba(39,174,96,.7)}
-.cell.hl::after{content:'';position:absolute;inset:30%;border-radius:50%;background:rgba(39,174,96,.6);pointer-events:none}
-.cell.sel{background:rgba(212,160,23,.3)!important}
-.cell.win-target{background:rgba(192,57,43,.35)!important;border-color:rgba(192,57,43,.7)!important}
-.cell.win-target::after{content:'';position:absolute;inset:30%;border-radius:50%;background:rgba(192,57,43,.5);pointer-events:none}
-.cap{position:absolute;width:78%;height:78%;top:11%;left:11%;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .15s,box-shadow .15s;user-select:none;z-index:2;font-size:.85em}
-.cap.dk{background:radial-gradient(circle at 35% 35%,#3d3528,#1f1a14);border:2px solid rgba(255,255,255,.15);box-shadow:0 3px 8px rgba(0,0,0,.6),inset 0 1px 1px rgba(255,255,255,.1);color:rgba(255,255,255,.2)}
-.cap.lt{background:radial-gradient(circle at 35% 35%,#f5edd8,#c8b97a);border:2px solid rgba(255,255,255,.4);box-shadow:0 3px 8px rgba(0,0,0,.4),inset 0 1px 1px rgba(255,255,255,.4);color:rgba(0,0,0,.2)}
+#board{width:100%;height:100%;background:#8B6914;background-image:repeating-linear-gradient(0deg,rgba(0,0,0,.08) 0px,rgba(0,0,0,.08) 1px,transparent 1px,transparent calc(100%/var(--sz,7))),repeating-linear-gradient(90deg,rgba(0,0,0,.08) 0px,rgba(0,0,0,.08) 1px,transparent 1px,transparent calc(100%/var(--sz,7)));border-radius:8px;border:3px solid var(--wood-dark);box-shadow:0 8px 30px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.1);padding:4px}
+.board-inner{display:grid;width:100%;height:100%}
+.cell{position:relative;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:3px;transition:background .15s}
+.cell:hover{background:rgba(255,255,255,.06)}
+.cell.target{background:rgba(39,174,96,.25)}
+.cell.target::after{content:'';position:absolute;width:30%;height:30%;background:var(--green);border-radius:50%;opacity:.75;pointer-events:none}
+.cap{position:relative;width:72%;height:72%;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .15s,box-shadow .15s;z-index:3}
+.cap.dk{background:radial-gradient(circle at 35% 35%,#3a3028,#1f1a14);border:2px solid rgba(255,255,255,.15);box-shadow:0 3px 8px rgba(0,0,0,.5),inset 0 1px 1px rgba(255,255,255,.1)}
+.cap.lt{background:radial-gradient(circle at 35% 35%,#f5edd8,#c8b97a);border:2px solid rgba(255,255,255,.4);box-shadow:0 3px 8px rgba(0,0,0,.4),inset 0 1px 1px rgba(255,255,255,.4)}
 .cap:hover{transform:scale(1.08)}
 .cap.picked{box-shadow:0 0 0 3px var(--gold),0 3px 12px rgba(0,0,0,.5)!important;transform:scale(1.1)}
-.bottle{position:absolute;width:62%;height:62%;top:19%;left:19%;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:1;font-size:1.1em}
-.bottle.dk{background:rgba(31,26,20,.85);border:2px solid rgba(100,80,40,.8);box-shadow:0 2px 6px rgba(0,0,0,.5)}
-.bottle.lt{background:rgba(240,232,208,.7);border:2px solid rgba(200,185,122,.8);box-shadow:0 2px 6px rgba(0,0,0,.3)}
-.legend{display:flex;gap:14px;font-size:.8rem;color:#a08860;justify-content:center;flex-wrap:wrap}
+.bottle{position:absolute;width:58%;height:58%;top:21%;left:21%;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:2;opacity:.8;font-size:.85em}
+.bottle.dk{background:rgba(31,26,20,.7);border:2px solid rgba(100,80,40,.6)}
+.bottle.lt{background:rgba(240,232,208,.5);border:2px solid rgba(200,185,122,.6)}
+.legend{display:flex;gap:14px;font-size:.8rem;color:#a08860;justify-content:center}
 #winner-text{font-family:'Bebas Neue',sans-serif;font-size:2.3rem;letter-spacing:.1em;color:var(--gold);text-shadow:0 0 30px rgba(212,160,23,.5);margin-bottom:10px;text-align:center}
 .rules-box{background:rgba(255,255,255,.03);border:1px solid rgba(212,160,23,.15);border-radius:8px;padding:14px;font-size:.85rem;line-height:1.7;color:#c8b890;text-align:left}
 .rules-box h3{font-family:'Bebas Neue',sans-serif;letter-spacing:.08em;color:var(--gold);margin-bottom:6px;font-size:1.05rem}
@@ -81,6 +79,7 @@ header p{font-style:italic;color:#a08860;font-size:.9rem;margin-top:2px}
     <button class="tab-btn" onclick="showTab('rules')">R&egrave;gles</button>
   </div>
 
+  <!-- CREATE -->
   <div id="tab-create">
     <div id="c1">
       <div class="input-group"><label>Ton pr&eacute;nom</label><input id="c-name" placeholder="Alice" maxlength="16"></div>
@@ -102,6 +101,7 @@ header p{font-style:italic;color:#a08860;font-size:.9rem;margin-top:2px}
     </div>
   </div>
 
+  <!-- JOIN -->
   <div id="tab-join" style="display:none">
     <div class="input-group"><label>Ton pr&eacute;nom</label><input id="j-name" placeholder="Bob" maxlength="16"></div>
     <div class="input-group"><label>Code de la partie</label>
@@ -111,25 +111,22 @@ header p{font-style:italic;color:#a08860;font-size:.9rem;margin-top:2px}
     <p class="note" id="j-err" style="color:#c0392b"></p>
   </div>
 
+  <!-- RULES -->
   <div id="tab-rules" style="display:none">
     <div class="rules-box">
       <h3>But du jeu</h3>
-      <p>Recouvrir la bouteille adverse avec une de tes capsules, ou bloquer l'adversaire pour qu'il ne puisse plus bouger.</p>
+      <p>Bloquer l'adversaire &mdash; qu'il ne puisse plus d&eacute;placer aucune de ses capsules.</p>
       <div class="sep"></div>
       <h3>D&eacute;roulement d'un tour</h3>
       <ul>
         <li>Choisis une de tes capsules.</li>
         <li>Compte toutes les capsules adjacentes (8 directions), peu importe leur couleur. C'est le nombre de cases &agrave; parcourir.</li>
         <li>D&eacute;place ta capsule en ligne droite d'<b>exactement</b> ce nombre de cases.</li>
-        <li>Tu ne peux ni traverser ni t'arr&ecirc;ter sur une autre capsule.</li>
-        <li>Tu ne peux pas t'arr&ecirc;ter sur <b>ta propre bouteille</b> (mais tu peux t'arr&ecirc;ter sur celle de l'adversaire pour gagner&nbsp;!).</li>
+        <li>Tu ne peux ni traverser ni t'arr&ecirc;ter sur une capsule ou une bouteille.</li>
       </ul>
       <div class="sep"></div>
-      <h3>Victoire</h3>
-      <ul>
-        <li>&#127942; Tu recouvres la bouteille adverse avec une de tes capsules.</li>
-        <li>&#127942; L'adversaire ne peut d&eacute;placer aucune capsule &agrave; son tour.</li>
-      </ul>
+      <h3>Fin de partie</h3>
+      <p>Un joueur qui ne peut d&eacute;placer aucune capsule perd la partie.</p>
     </div>
   </div>
 </div>
@@ -148,14 +145,8 @@ header p{font-style:italic;color:#a08860;font-size:.9rem;margin-top:2px}
   <div id="turn-indicator">&mdash;</div>
   <div id="message"></div>
   <div id="board-wrap"><div id="board"><div class="board-inner" id="bi"></div></div></div>
-  <div class="legend">
-    <span>&#127823; D&eacute;placement valide</span>
-    <span>&#128308; Bouteille adverse (victoire)</span>
-    <span>&#127919; Capsule s&eacute;lectionn&eacute;e</span>
-  </div>
-  <div style="text-align:center;margin-top:6px">
-    <button class="btn danger" onclick="abandon()">Abandonner</button>
-  </div>
+  <div class="legend"><span>&#127823; Cible valide</span><span>&#127919; Capsule s&eacute;lectionn&eacute;e</span></div>
+  <div style="text-align:center;margin-top:6px"><button class="btn danger" onclick="abandon()">Abandonner</button></div>
 </div>
 
 <div class="screen" id="s-gameover" style="display:none">
@@ -164,62 +155,69 @@ header p{font-style:italic;color:#a08860;font-size:.9rem;margin-top:2px}
   <div style="text-align:center"><button class="btn" onclick="backLobby()">Nouvelle partie</button></div>
 </div>
 
+<!-- PeerJS CDN -->
 <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+
 <script>
+// ── State ────────────────────────────────────────────────────────────────────
 let peer, conn;
-let myRole = null;
-let myName = '', oppName = '';
-let gs = null;
-let sel = null;
-let BS = 7;
+let myRole  = null;   // 'p1' | 'p2'
+let myName  = '', oppName = '';
+let gs      = null;   // game state
+let sel     = null;   // selected cell [r,c]
+let BS      = 7;
 let currentCode = '';
 
+// ── Utilities ────────────────────────────────────────────────────────────────
 function genCode() {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
-  let c = '';
-  for (let i = 0; i < 4; i++) c += chars[Math.floor(Math.random() * chars.length)];
-  return c;
+  return Math.random().toString(36).slice(2,6).toUpperCase();
 }
 
 function send(obj) {
   if (conn && conn.open) conn.send(JSON.stringify(obj));
 }
 
-function showTab(t) {
-  ['create','join','rules'].forEach(x => {
-    document.getElementById('tab-'+x).style.display = x===t ? 'block' : 'none';
+function showTab(name) {
+  ['create','join','rules'].forEach(t => {
+    document.getElementById('tab-'+t).style.display = (t===name) ? 'block' : 'none';
   });
   document.querySelectorAll('.tab-btn').forEach((b,i) => {
-    b.classList.toggle('active', ['create','join','rules'][i]===t);
+    b.classList.toggle('active', ['create','join','rules'][i]===name);
   });
 }
 
 function cpCode() {
-  navigator.clipboard.writeText(currentCode).then(() => {
-    const b = document.querySelector('#c2 .btn.sec');
-    b.textContent = 'Copie !';
-    setTimeout(() => b.textContent = 'Copier le code', 1500);
-  });
+  navigator.clipboard.writeText(currentCode).catch(()=>{});
 }
 
+// ── Host ─────────────────────────────────────────────────────────────────────
 function hostCreate() {
-  myName = document.getElementById('c-name').value.trim() || 'Joueur 1';
-  BS     = parseInt(document.getElementById('c-size').value);
-  myRole = 'p1';
+  myName  = document.getElementById('c-name').value.trim() || 'Joueur 1';
+  BS      = parseInt(document.getElementById('c-size').value);
+  myRole  = 'p1';
   currentCode = genCode();
-  document.getElementById('c-err').textContent = 'Connexion au serveur...';
+  document.getElementById('c-err').textContent = '';
+
   if (peer) { peer.destroy(); peer = null; }
-  peer = new Peer('topcap-' + currentCode, {debug: 0});
+
+  try {
+    peer = new Peer('topcap-' + currentCode);
+  } catch(e) {
+    document.getElementById('c-err').textContent = 'Erreur PeerJS : ' + e.message;
+    return;
+  }
+
   peer.on('open', () => {
-    document.getElementById('c-err').textContent = '';
     document.getElementById('c1').style.display = 'none';
     document.getElementById('c2').style.display = 'block';
     document.getElementById('room-code-box').textContent = currentCode;
   });
+
   peer.on('connection', c => {
     conn = c;
     setupConn();
   });
+
   peer.on('error', e => {
     document.getElementById('c-err').textContent = 'Erreur : ' + e.message;
     document.getElementById('c1').style.display = 'block';
@@ -227,116 +225,155 @@ function hostCreate() {
   });
 }
 
+// ── Join ─────────────────────────────────────────────────────────────────────
 function joinCreate() {
   myName = document.getElementById('j-name').value.trim() || 'Joueur 2';
   myRole = 'p2';
   const code = document.getElementById('j-code').value.trim().toUpperCase();
   if (!code || code.length < 4) {
-    document.getElementById('j-err').textContent = 'Entre un code a 4 lettres.';
+    document.getElementById('j-err').textContent = 'Entre un code à 4 lettres.';
     return;
   }
   document.getElementById('j-err').textContent = 'Connexion...';
+
   if (peer) { peer.destroy(); peer = null; }
-  peer = new Peer(undefined, {debug: 0});
+
+  try {
+    peer = new Peer();
+  } catch(e) {
+    document.getElementById('j-err').textContent = 'Erreur PeerJS : ' + e.message;
+    return;
+  }
+
   peer.on('open', () => {
-    conn = peer.connect('topcap-' + code, {reliable: true});
+    document.getElementById('j-err').textContent = 'Connexion au salon...';
+    conn = peer.connect('topcap-' + code, { reliable: true });
     setupConn();
   });
+
   peer.on('error', e => {
     document.getElementById('j-err').textContent = 'Erreur : ' + e.message;
   });
 }
 
+// ── Connection setup (runs for both players) ─────────────────────────────────
 function setupConn() {
   conn.on('open', () => {
-    if (myRole === 'p2') {
-      send({ t: 'hello', name: myName });
-      document.getElementById('j-err').textContent = 'Connecte ! En attente du demarrage...';
+    // Both players announce themselves
+    send({ t: 'hello', name: myName, role: myRole });
+
+    // Host initialises the board and waits for hello back
+    if (myRole === 'p1') {
+      startGame();
+    } else {
+      document.getElementById('j-err').textContent = 'Connecté ! En attente du lancement...';
     }
   });
+
   conn.on('data', raw => {
     let msg;
-    try { msg = JSON.parse(raw); } catch(e) { return; }
-    if (msg.t === 'hello') {
-      oppName = msg.name;
-      startGame();
-      send({ t: 'start', name: myName, sz: BS, board: gs.b });
-      showGame();
-    } else if (msg.t === 'start') {
-      oppName = msg.name;
-      BS = msg.sz;
-      gs = { b: msg.board, turn: 'p1', sz: BS, over: false };
-      showGame();
-    } else if (msg.t === 'move') {
-      applyMove(msg.f, msg.to, false);
-    } else if (msg.t === 'abandon') {
-      endGame(myRole, oppName + ' a abandonne. Tu gagnes !');
-    }
+    try { msg = (typeof raw === 'string') ? JSON.parse(raw) : raw; }
+    catch(e) { return; }
+    handleMsg(msg);
   });
+
   conn.on('close', () => {
     if (gs && !gs.over) {
-      endGame(myRole, 'Connexion perdue. Ton adversaire s'est deconnecte.');
+      endGame(myRole, 'L\'adversaire s\'est déconnecté.');
     }
   });
-  conn.on('error', e => { console.error('conn error', e); });
+
+  conn.on('error', e => {
+    console.error('conn error', e);
+  });
 }
 
+// ── Message handler ───────────────────────────────────────────────────────────
+function handleMsg(msg) {
+  switch (msg.t) {
+
+    case 'hello':
+      // Both sides learn the opponent name
+      oppName = msg.name || 'Adversaire';
+
+      if (myRole === 'p1') {
+        // Host: send the full game state and start for both
+        send({
+          t: 'start',
+          gs: gs,
+          bs: BS,
+          p1name: myName,
+          p2name: oppName
+        });
+        showGame();
+      }
+      break;
+
+    case 'start':
+      // Guest receives the initial game state from host
+      gs      = msg.gs;
+      BS      = msg.bs;
+      oppName = msg.p1name || 'Adversaire';
+      showGame();
+      break;
+
+    case 'move':
+      applyMove(msg.f, msg.to, false);
+      break;
+
+    case 'abandon':
+      endGame(myRole, 'L\'adversaire a abandonné.');
+      break;
+  }
+}
+
+// ── Game Logic ────────────────────────────────────────────────────────────────
 function initBoard(sz) {
-  const b = Array.from({length: sz}, () => Array(sz).fill(null));
-  b[0][0]       = { p: 'p1', t: 'bot' };
-  b[sz-1][sz-1] = { p: 'p2', t: 'bot' };
+  const b = Array.from({length:sz}, () => Array(sz).fill(null));
+  b[0][0]         = { p:'p1', t:'bot' };
+  b[sz-1][sz-1]   = { p:'p2', t:'bot' };
   [[0,1],[0,2],[1,0],[2,0]].forEach(([r,c]) => b[r][c] = { p:'p1', t:'cap' });
   [[sz-1,sz-2],[sz-1,sz-3],[sz-2,sz-1],[sz-3,sz-1]].forEach(([r,c]) => b[r][c] = { p:'p2', t:'cap' });
   return b;
 }
 
 function startGame() {
-  gs = { b: initBoard(BS), turn: 'p1', sz: BS, over: false };
+  gs = { b: initBoard(BS), turn:'p1', sz:BS, over:false, winner:null };
 }
 
 function adjCount(b, r, c, sz) {
   let n = 0;
-  for (let dr = -1; dr <= 1; dr++) {
-    for (let dc = -1; dc <= 1; dc++) {
+  for (let dr=-1; dr<=1; dr++) {
+    for (let dc=-1; dc<=1; dc++) {
       if (!dr && !dc) continue;
-      const rr = r+dr, cc = c+dc;
-      if (rr >= 0 && rr < sz && cc >= 0 && cc < sz && b[rr][cc] && b[rr][cc].t === 'cap') n++;
+      const rr=r+dr, cc=c+dc;
+      if (rr>=0 && rr<sz && cc>=0 && cc<sz && b[rr][cc]) n++;
     }
   }
   return n;
 }
 
-function validMoves(b, r, c, player, sz) {
+function validMoves(b, r, c, sz) {
   const steps = adjCount(b, r, c, sz);
   if (!steps) return [];
   const dirs = [[-1,0],[1,0],[0,-1],[0,1],[-1,-1],[-1,1],[1,-1],[1,1]];
-  const moves = [];
-  for (const [dr, dc] of dirs) {
-    let rr = r, cc = c, blocked = false;
-    for (let i = 1; i <= steps; i++) {
-      rr += dr; cc += dc;
-      if (rr < 0 || rr >= sz || cc < 0 || cc >= sz) { blocked = true; break; }
-      const cell = b[rr][cc];
-      if (cell) {
-        if (cell.t === 'cap') { blocked = true; break; }
-        if (cell.t === 'bot') {
-          if (i < steps) { blocked = true; break; }
-          else if (cell.p === player) { blocked = true; break; }
-        }
-      }
+  const result = [];
+  dirs.forEach(([dr,dc]) => {
+    let rr=r, cc=c, ok=true;
+    for (let i=0; i<steps; i++) {
+      rr+=dr; cc+=dc;
+      if (rr<0||rr>=sz||cc<0||cc>=sz||b[rr][cc]) { ok=false; break; }
     }
-    if (!blocked) moves.push([rr, cc]);
-  }
-  return moves;
+    if (ok) result.push([rr,cc]);
+  });
+  return result;
 }
 
-function hasMove(b, player, sz) {
-  for (let r = 0; r < sz; r++) {
-    for (let c = 0; c < sz; c++) {
+function hasAnyMove(b, player, sz) {
+  for (let r=0; r<sz; r++) {
+    for (let c=0; c<sz; c++) {
       const cell = b[r][c];
-      if (cell && cell.p === player && cell.t === 'cap') {
-        if (validMoves(b, r, c, player, sz).length > 0) return true;
-      }
+      if (cell && cell.p===player && cell.t==='cap' && validMoves(b,r,c,sz).length) return true;
     }
   }
   return false;
@@ -344,144 +381,146 @@ function hasMove(b, player, sz) {
 
 function applyMove(from, to, local) {
   const b = gs.b;
-  const movingPiece = b[from[0]][from[1]];
-  const targetCell  = b[to[0]][to[1]];
-  let won = false;
-  if (targetCell && targetCell.t === 'bot' && targetCell.p !== gs.turn) won = true;
-  b[to[0]][to[1]]     = movingPiece;
+  b[to[0]][to[1]] = b[from[0]][from[1]];
   b[from[0]][from[1]] = null;
-  sel = null;
-  if (local) send({ t: 'move', f: from, to });
-  if (won) {
-    gs.over = true; gs.winner = gs.turn;
-    renderBoard(); updateUI();
-    endGame(gs.turn, (gs.turn === myRole ? myName : oppName) + ' remporte la partie en recouvrant la bouteille !');
-    return;
-  }
+
   const prev = gs.turn;
-  gs.turn = prev === 'p1' ? 'p2' : 'p1';
-  if (!hasMove(b, gs.turn, gs.sz)) {
-    gs.over = true; gs.winner = prev;
-    renderBoard(); updateUI();
-    endGame(prev, (prev === myRole ? myName : oppName) + ' gagne - l'adversaire est bloque !');
-    return;
+  gs.turn = (prev==='p1') ? 'p2' : 'p1';
+
+  if (!hasAnyMove(b, gs.turn, gs.sz)) {
+    gs.over   = true;
+    gs.winner = prev;
   }
+
+  sel = null;
   renderBoard();
   updateUI();
+
+  if (local) send({ t:'move', f:from, to:to });
+  if (gs.over) endGame(gs.winner, (gs.winner===myRole ? myName : oppName) + ' a gagné !');
 }
 
-function isMyTurn() { return gs && gs.turn === myRole; }
+function isMyTurn() {
+  return gs && !gs.over && gs.turn===myRole;
+}
 
+// ── Rendering ─────────────────────────────────────────────────────────────────
 function showGame() {
   document.getElementById('s-lobby').style.display   = 'none';
+  document.getElementById('s-gameover').style.display = 'none';
   document.getElementById('game-area').style.display  = 'flex';
-  document.getElementById('np1').textContent = myRole === 'p1' ? myName : oppName;
-  document.getElementById('np2').textContent = myRole === 'p2' ? myName : oppName;
+
+  // p1 is always dark caps, p2 is light caps
+  document.getElementById('np1').textContent = (myRole==='p1') ? myName : oppName;
+  document.getElementById('np2').textContent = (myRole==='p2') ? myName : oppName;
+
+  document.getElementById('board').style.setProperty('--sz', gs.sz);
   renderBoard();
   updateUI();
-}
-
-function updateUI() {
-  if (!gs) return;
-  const myTurn = isMyTurn();
-  document.getElementById('pp1').classList.toggle('active', gs.turn === 'p1');
-  document.getElementById('pp2').classList.toggle('active', gs.turn === 'p2');
-  if (gs.over) {
-    document.getElementById('turn-indicator').textContent = '';
-    document.getElementById('message').textContent = '';
-    return;
-  }
-  const turnName = gs.turn === myRole ? myName : oppName;
-  document.getElementById('turn-indicator').textContent =
-    myTurn ? 'Ton tour !' : 'Tour de ' + turnName;
-  document.getElementById('message').textContent =
-    myTurn
-      ? (sel ? 'Clique sur une case verte pour deplacer.' : 'Selectionne une de tes capsules.')
-      : 'Attends que ton adversaire joue...';
 }
 
 function renderBoard() {
   if (!gs) return;
   const bi = document.getElementById('bi');
-  bi.style.gridTemplateColumns = 'repeat('+gs.sz+',1fr)';
-  bi.style.gridTemplateRows    = 'repeat('+gs.sz+',1fr)';
   bi.innerHTML = '';
-  const vm    = sel ? validMoves(gs.b, sel[0], sel[1], gs.turn, gs.sz) : [];
-  const vmSet = new Set(vm.map(([r,c]) => r+','+c));
-  for (let r = 0; r < gs.sz; r++) {
-    for (let c = 0; c < gs.sz; c++) {
-      const cell = document.createElement('div');
-      cell.className = 'cell';
-      const isSel = sel && sel[0]===r && sel[1]===c;
-      if (isSel) cell.classList.add('sel');
-      const key = r+','+c;
-      if (vmSet.has(key)) {
-        const target = gs.b[r][c];
-        if (target && target.t === 'bot') cell.classList.add('win-target');
-        else cell.classList.add('hl');
-      }
-      const piece = gs.b[r][c];
-      if (piece) {
+  const sz = gs.sz;
+  bi.style.gridTemplateColumns = `repeat(${sz},1fr)`;
+  bi.style.gridTemplateRows    = `repeat(${sz},1fr)`;
+
+  const moves = (sel && isMyTurn())
+    ? validMoves(gs.b, sel[0], sel[1], sz)
+    : [];
+
+  for (let r=0; r<sz; r++) {
+    for (let c=0; c<sz; c++) {
+      const div  = document.createElement('div');
+      div.className = 'cell';
+      div.dataset.r = r;
+      div.dataset.c = c;
+
+      const isTarget = moves.some(m => m[0]===r && m[1]===c);
+      if (isTarget) div.classList.add('target');
+
+      const cell = gs.b[r][c];
+      if (cell) {
         const el = document.createElement('div');
-        if (piece.t === 'cap') {
-          el.className = 'cap ' + (piece.p === 'p1' ? 'dk' : 'lt');
-          el.textContent = piece.p === 'p1' ? '\u2699' : '\u2726';
-          if (isSel) el.classList.add('picked');
-          el.onclick = e => { e.stopPropagation(); onCapClick(r, c); };
+        if (cell.t === 'cap') {
+          el.className = 'cap ' + (cell.p==='p1' ? 'dk' : 'lt');
+          if (sel && sel[0]===r && sel[1]===c) el.classList.add('picked');
         } else {
-          el.className = 'bottle ' + (piece.p === 'p1' ? 'dk' : 'lt');
-          el.textContent = '\uD83C\uDF7A';
+          el.className = 'bottle ' + (cell.p==='p1' ? 'dk' : 'lt');
+          el.textContent = '🍺';
         }
-        cell.appendChild(el);
+        div.appendChild(el);
       }
-      cell.onclick = () => onCellClick(r, c);
-      bi.appendChild(cell);
+
+      div.addEventListener('click', () => onCellClick(r, c));
+      bi.appendChild(div);
     }
   }
 }
 
-function onCapClick(r, c) {
-  if (!isMyTurn() || gs.over) return;
-  const piece = gs.b[r][c];
-  if (!piece || piece.t !== 'cap' || piece.p !== myRole) {
-    sel = null; renderBoard(); updateUI(); return;
+function onCellClick(r, c) {
+  if (!isMyTurn()) {
+    document.getElementById('message').textContent = 'Ce n\'est pas ton tour.';
+    return;
   }
-  if (sel && sel[0]===r && sel[1]===c) sel = null;
-  else sel = [r, c];
-  renderBoard(); updateUI();
+
+  const cell  = gs.b[r][c];
+  const moves = sel ? validMoves(gs.b, sel[0], sel[1], gs.sz) : [];
+
+  // Click on a valid target -> move
+  if (sel && moves.some(m => m[0]===r && m[1]===c)) {
+    applyMove(sel, [r,c], true);
+    document.getElementById('message').textContent = '';
+    return;
+  }
+
+  // Click on own cap -> select
+  if (cell && cell.p===myRole && cell.t==='cap') {
+    sel = [r, c];
+    renderBoard();
+    const mv = validMoves(gs.b, r, c, gs.sz);
+    document.getElementById('message').textContent = mv.length
+      ? `${mv.length} déplacement(s) possible(s) — ${adjCount(gs.b,r,c,gs.sz)} case(s)`
+      : 'Aucun déplacement possible pour cette capsule.';
+    return;
+  }
+
+  // Click elsewhere -> deselect
+  sel = null;
+  renderBoard();
+  document.getElementById('message').textContent = '';
 }
 
-function onCellClick(r, c) {
-  if (!isMyTurn() || gs.over) return;
-  if (sel) {
-    const vm = validMoves(gs.b, sel[0], sel[1], gs.turn, gs.sz);
-    const ok = vm.some(([mr, mc]) => mr===r && mc===c);
-    if (ok) { applyMove(sel, [r, c], true); return; }
-  }
-  const piece = gs.b[r][c];
-  if (piece && piece.t === 'cap' && piece.p === myRole) {
-    sel = [r, c];
+function updateUI() {
+  if (!gs) return;
+  const ti = document.getElementById('turn-indicator');
+  if (gs.over) {
+    ti.textContent = 'Partie terminée';
   } else {
-    sel = null;
+    ti.textContent = isMyTurn()
+      ? '→ C\'est ton tour !' 
+      : '⏳ Tour de ' + (gs.turn===myRole ? myName : oppName);
   }
-  renderBoard(); updateUI();
+  document.getElementById('pp1').classList.toggle('active', gs.turn==='p1' && !gs.over);
+  document.getElementById('pp2').classList.toggle('active', gs.turn==='p2' && !gs.over);
 }
 
 function endGame(winner, msg) {
-  gs.over = true; gs.winner = winner;
-  setTimeout(() => {
-    document.getElementById('game-area').style.display   = 'none';
-    document.getElementById('s-gameover').style.display  = 'block';
-    document.getElementById('winner-text').textContent   =
-      winner === myRole ? 'Victoire !' : 'Defaite';
-    document.getElementById('go-msg').textContent = msg;
-  }, 600);
+  gs.over   = true;
+  gs.winner = winner;
+  document.getElementById('game-area').style.display   = 'none';
+  document.getElementById('s-gameover').style.display  = 'block';
+  document.getElementById('winner-text').textContent =
+    (winner===myRole) ? '🏆 Victoire !' : '😞 Défaite';
+  document.getElementById('go-msg').textContent = msg;
 }
 
 function abandon() {
   if (!confirm('Abandonner la partie ?')) return;
-  send({ t: 'abandon' });
-  endGame(myRole === 'p1' ? 'p2' : 'p1', 'Tu as abandonne.');
+  send({ t:'abandon' });
+  endGame((myRole==='p1'?'p2':'p1'), 'Tu as abandonné.');
 }
 
 function backLobby() {
@@ -489,9 +528,8 @@ function backLobby() {
   document.getElementById('s-lobby').style.display    = 'block';
   document.getElementById('c1').style.display = 'block';
   document.getElementById('c2').style.display = 'none';
-  document.getElementById('c-err').textContent = '';
   if (peer) { peer.destroy(); peer = null; }
-  conn = null; gs = null; sel = null; myRole = null;
+  conn=null; gs=null; sel=null; myRole=null;
 }
 </script>
 </body>
