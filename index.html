@@ -4,530 +4,603 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Top Cap</title>
+<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap');
-:root{--dark:#1a1209;--wood:#8B6914;--wood-light:#c49a3c;--wood-dark:#5c4008;--cream:#f0e8d0;--red:#c0392b;--black-cap:#1f1a14;--gold:#d4a017;--green:#27ae60}
+:root{
+  --dark:#1a1209;--wood:#8B6914;--wood-light:#c49a3c;--wood-dark:#5c4008;
+  --cream:#f0e8d0;--red:#c0392b;--black-cap:#1f1a14;--gold:#d4a017;--green:#27ae60;
+}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:#1a1209;background-image:radial-gradient(ellipse at 20% 20%,#2d1f00 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,#0d0800 0%,transparent 60%);min-height:100vh;font-family:'Crimson Pro',serif;color:var(--cream);display:flex;flex-direction:column;align-items:center}
+body{
+  background:#1a1209;
+  background-image:radial-gradient(ellipse at 20% 20%,#2d1f00 0%,transparent 60%),
+                   radial-gradient(ellipse at 80% 80%,#0d0800 0%,transparent 60%);
+  min-height:100vh;font-family:'Crimson Pro',serif;color:var(--cream);
+  display:flex;flex-direction:column;align-items:center;
+}
 header{text-align:center;padding:20px 16px 4px}
-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.2rem,7vw,4rem);letter-spacing:.12em;color:var(--gold);text-shadow:0 0 30px rgba(212,160,23,.4),2px 2px 0 var(--wood-dark);line-height:1}
+header h1{
+  font-family:'Bebas Neue',sans-serif;font-size:clamp(2.2rem,7vw,4rem);
+  letter-spacing:.12em;color:var(--gold);
+  text-shadow:0 0 30px rgba(212,160,23,.4),2px 2px 0 var(--wood-dark);line-height:1;
+}
 header p{font-style:italic;color:#a08860;font-size:.9rem;margin-top:2px}
-.screen{background:rgba(255,255,255,.04);border:1px solid rgba(212,160,23,.25);border-radius:12px;padding:24px;margin:12px auto;max-width:480px;width:92%}
+.screen{
+  background:rgba(255,255,255,.04);border:1px solid rgba(212,160,23,.25);
+  border-radius:12px;padding:24px;margin:12px auto;max-width:480px;width:92%;
+}
 .tabs{display:flex;gap:6px;margin-bottom:16px;justify-content:center}
-.tab-btn{background:transparent;border:1px solid rgba(212,160,23,.3);border-radius:6px;padding:7px 18px;color:#a08860;font-family:'Bebas Neue',sans-serif;font-size:.95rem;cursor:pointer;transition:all .2s}
+.tab-btn{
+  background:transparent;border:1px solid rgba(212,160,23,.3);border-radius:6px;
+  padding:7px 18px;color:#a08860;font-family:'Bebas Neue',sans-serif;
+  font-size:.95rem;cursor:pointer;transition:all .2s;
+}
 .tab-btn.active,.tab-btn:hover{background:rgba(212,160,23,.15);color:var(--gold);border-color:var(--gold)}
 .input-group{margin-bottom:14px}
-.input-group label{display:block;font-size:.82rem;color:#a08860;margin-bottom:4px;letter-spacing:.04em}
-.input-group input,.input-group select{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(212,160,23,.3);border-radius:6px;padding:9px 12px;color:var(--cream);font-family:'Crimson Pro',serif;font-size:1rem;outline:none;transition:border-color .2s}
+.input-group label{display:block;font-size:.82rem;color:#a08860;margin-bottom:4px;letter-spacing:.05em}
+.input-group input,.input-group select{
+  width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(212,160,23,.25);
+  border-radius:6px;padding:9px 12px;color:var(--cream);font-family:'Crimson Pro',serif;
+  font-size:1rem;outline:none;transition:border .2s;
+}
 .input-group input:focus,.input-group select:focus{border-color:var(--gold)}
-.input-group select option{background:#1a1209}
-.btn{background:linear-gradient(135deg,var(--wood),var(--wood-dark));border:none;border-radius:8px;padding:11px 28px;color:var(--cream);font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:.08em;cursor:pointer;transition:all .2s;box-shadow:0 3px 10px rgba(0,0,0,.3)}
-.btn:hover{background:linear-gradient(135deg,var(--wood-light),var(--wood));transform:translateY(-1px)}
-.btn.sm{padding:7px 16px;font-size:.88rem}
-.btn.sec{background:rgba(212,160,23,.1);border:1px solid rgba(212,160,23,.4);color:var(--gold)}
-.btn.sec:hover{background:rgba(212,160,23,.2)}
-.btn.danger{background:rgba(192,57,43,.2);border:1px solid rgba(192,57,43,.5);color:#e74c3c}
-.btn.danger:hover{background:rgba(192,57,43,.35)}
-.note{font-size:.82rem;color:#a08860;text-align:center;margin:6px 0}
-.sep{border:none;border-top:1px solid rgba(212,160,23,.15);margin:10px 0}
-.blink{animation:blink 1.2s ease-in-out infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-#room-code-box{background:rgba(212,160,23,.1);border:1px dashed var(--gold);border-radius:8px;padding:10px;margin:12px 0;font-family:'Bebas Neue',sans-serif;font-size:2.8rem;letter-spacing:.25em;color:var(--gold);text-align:center}
-#game-area{display:flex;flex-direction:column;align-items:center;width:100%;padding:0 8px 20px;gap:10px}
-.players-info{display:flex;gap:12px;width:100%;max-width:500px}
-.player-panel{flex:1;background:rgba(255,255,255,.04);border:2px solid rgba(255,255,255,.08);border-radius:10px;padding:9px 12px;transition:all .3s}
-.player-panel.active{border-color:var(--gold);background:rgba(212,160,23,.08);box-shadow:0 0 14px rgba(212,160,23,.15)}
-.pname{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:.06em}
-.psub{font-size:.78rem;color:#a08860}
-.cap-dot{display:inline-block;width:12px;height:12px;border-radius:50%;border:2px solid rgba(255,255,255,.3);vertical-align:middle;margin-right:5px}
-.cap-dot.dk{background:var(--black-cap)}.cap-dot.lt{background:var(--cream)}
-#turn-indicator{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.1em;color:var(--gold);text-align:center;min-height:26px}
-#message{font-style:italic;color:#a08860;text-align:center;font-size:.9rem;min-height:20px}
-#board-wrap{position:relative;width:min(94vw,460px);aspect-ratio:1}
-#board{width:100%;height:100%;background:#8B6914;background-image:repeating-linear-gradient(0deg,rgba(0,0,0,.08) 0px,rgba(0,0,0,.08) 1px,transparent 1px,transparent calc(100%/var(--sz,7))),repeating-linear-gradient(90deg,rgba(0,0,0,.08) 0px,rgba(0,0,0,.08) 1px,transparent 1px,transparent calc(100%/var(--sz,7)));border-radius:8px;border:3px solid var(--wood-dark);box-shadow:0 8px 30px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.1);padding:4px}
-.board-inner{display:grid;width:100%;height:100%}
-.cell{position:relative;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:3px;transition:background .15s}
-.cell:hover{background:rgba(255,255,255,.06)}
-.cell.target{background:rgba(39,174,96,.25)}
-.cell.target::after{content:'';position:absolute;width:30%;height:30%;background:var(--green);border-radius:50%;opacity:.75;pointer-events:none}
-.cap{position:relative;width:72%;height:72%;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .15s,box-shadow .15s;z-index:3}
-.cap.dk{background:radial-gradient(circle at 35% 35%,#3a3028,#1f1a14);border:2px solid rgba(255,255,255,.15);box-shadow:0 3px 8px rgba(0,0,0,.5),inset 0 1px 1px rgba(255,255,255,.1)}
-.cap.lt{background:radial-gradient(circle at 35% 35%,#f5edd8,#c8b97a);border:2px solid rgba(255,255,255,.4);box-shadow:0 3px 8px rgba(0,0,0,.4),inset 0 1px 1px rgba(255,255,255,.4)}
-.cap:hover{transform:scale(1.08)}
-.cap.picked{box-shadow:0 0 0 3px var(--gold),0 3px 12px rgba(0,0,0,.5)!important;transform:scale(1.1)}
-.bottle{position:absolute;width:58%;height:58%;top:21%;left:21%;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:2;opacity:.8;font-size:.85em}
-.bottle.dk{background:rgba(31,26,20,.7);border:2px solid rgba(100,80,40,.6)}
-.bottle.lt{background:rgba(240,232,208,.5);border:2px solid rgba(200,185,122,.6)}
-.legend{display:flex;gap:14px;font-size:.8rem;color:#a08860;justify-content:center}
-#winner-text{font-family:'Bebas Neue',sans-serif;font-size:2.3rem;letter-spacing:.1em;color:var(--gold);text-shadow:0 0 30px rgba(212,160,23,.5);margin-bottom:10px;text-align:center}
-.rules-box{background:rgba(255,255,255,.03);border:1px solid rgba(212,160,23,.15);border-radius:8px;padding:14px;font-size:.85rem;line-height:1.7;color:#c8b890;text-align:left}
-.rules-box h3{font-family:'Bebas Neue',sans-serif;letter-spacing:.08em;color:var(--gold);margin-bottom:6px;font-size:1.05rem}
-.rules-box ul{padding-left:16px}
-.rules-box li{margin-bottom:3px}
+.input-group select option{background:#2d1f00}
+.btn{
+  background:linear-gradient(135deg,var(--wood-light),var(--wood));border:none;
+  border-radius:8px;padding:10px 28px;color:#1a0f00;font-family:'Bebas Neue',sans-serif;
+  font-size:1.1rem;letter-spacing:.08em;cursor:pointer;transition:all .2s;
+  box-shadow:0 3px 10px rgba(0,0,0,.4);width:100%;margin-top:4px;
+}
+.btn:hover{filter:brightness(1.15);transform:translateY(-1px)}
+.btn-sm{padding:6px 16px;font-size:.85rem;width:auto;margin-top:0}
+.btn-danger{background:linear-gradient(135deg,#c0392b,#922b21);color:#fff}
+.status-badge{
+  display:inline-block;padding:4px 12px;border-radius:20px;font-size:.78rem;
+  letter-spacing:.06em;font-family:'Bebas Neue',sans-serif;
+}
+.badge-wait{background:rgba(212,160,23,.2);color:var(--gold);border:1px solid rgba(212,160,23,.4)}
+.badge-ok{background:rgba(39,174,96,.2);color:#2ecc71;border:1px solid rgba(39,174,96,.4)}
+.err{color:#e74c3c;font-size:.82rem;margin-top:6px;min-height:18px}
+
+#game-area{display:none;flex-direction:column;align-items:center;width:100%;padding:12px 0 24px}
+.game-header{
+  display:flex;align-items:center;justify-content:space-between;
+  width:92%;max-width:460px;margin-bottom:10px;
+}
+.player-tag{
+  font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.08em;
+  padding:5px 14px;border-radius:20px;border:2px solid transparent;transition:all .3s;
+}
+.player-tag.p1{background:rgba(240,232,208,.08);border-color:rgba(240,232,208,.3);color:var(--cream)}
+.player-tag.p2{background:rgba(31,26,20,.3);border-color:rgba(100,80,40,.4);color:#888}
+.player-tag.active-tag{box-shadow:0 0 12px rgba(212,160,23,.5);border-color:var(--gold);color:var(--gold)}
+#turn-indicator{font-size:.8rem;color:#a08860;font-style:italic;text-align:center}
+
+#board{
+  display:grid;border-radius:8px;overflow:hidden;
+  border:3px solid var(--wood-dark);
+  box-shadow:0 8px 32px rgba(0,0,0,.6),inset 0 0 40px rgba(0,0,0,.2);
+}
+.cell{
+  width:72px;height:72px;display:flex;align-items:center;justify-content:center;
+  position:relative;cursor:pointer;transition:background .15s;
+}
+.cell.light{background:#c4973a}
+.cell.dark{background:#a07828}
+.cell:hover{filter:brightness(1.1)}
+.cell.highlighted{background:rgba(39,174,96,.45)!important;box-shadow:inset 0 0 8px rgba(39,174,96,.6)}
+.cell.highlighted-win{background:rgba(192,57,43,.55)!important;box-shadow:inset 0 0 8px rgba(192,57,43,.7)}
+.cell.selected-cell{background:rgba(212,160,23,.45)!important;box-shadow:inset 0 0 10px rgba(212,160,23,.7)}
+
+.piece{
+  width:58px;height:58px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:1.6rem;position:relative;
+  transition:transform .15s;user-select:none;
+  box-shadow:0 3px 8px rgba(0,0,0,.5),inset 0 1px 3px rgba(255,255,255,.2);
+}
+.piece.cap-p1{
+  background:radial-gradient(circle at 35% 30%,#f0f0f0,#d0d0d0 60%,#a0a0a0);
+  border:2px solid #888;color:#333;cursor:pointer;
+}
+.piece.cap-p2{
+  background:radial-gradient(circle at 35% 30%,#4a3f30,#1f1a14 60%,#0a0805);
+  border:2px solid #5c4a2a;color:#c49a3c;cursor:pointer;
+}
+.piece.bottle-p1{
+  background:radial-gradient(circle at 40% 30%,rgba(200,240,255,.7),rgba(100,200,220,.4));
+  border:2px solid rgba(150,220,240,.6);color:#fff;font-size:1.8rem;
+  box-shadow:0 3px 12px rgba(100,200,255,.3),inset 0 1px 3px rgba(255,255,255,.5);
+}
+.piece.bottle-p2{
+  background:radial-gradient(circle at 40% 30%,rgba(80,60,40,.8),rgba(40,30,15,.9));
+  border:2px solid rgba(120,90,40,.7);color:#c49a3c;font-size:1.8rem;
+  box-shadow:0 3px 12px rgba(0,0,0,.5),inset 0 1px 3px rgba(255,255,255,.1);
+}
+.piece.selected-piece{
+  box-shadow:0 0 0 3px var(--gold),0 4px 12px rgba(212,160,23,.5);
+  transform:scale(1.1);
+}
+.adj-count{
+  position:absolute;bottom:-2px;right:-2px;
+  background:var(--gold);color:#1a0f00;border-radius:50%;
+  width:18px;height:18px;font-size:.65rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Bebas Neue',sans-serif;box-shadow:0 1px 4px rgba(0,0,0,.4);
+}
+.game-footer{margin-top:12px;display:flex;gap:10px;align-items:center}
+#status-msg{font-size:.85rem;color:#a08860;font-style:italic}
+#winner-text{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:var(--gold);text-align:center;margin-bottom:8px}
+#go-msg{text-align:center;color:#a08860;font-style:italic;margin-bottom:20px}
 </style>
 </head>
 <body>
 <header>
-  <h1>Top Cap</h1>
-  <p>Le jeu de capsules strat&eacute;gique &mdash; multijoueur en ligne</p>
+  <h1>TOP CAP</h1>
+  <p>Le jeu de capsules stratégique</p>
 </header>
 
+<!-- LOBBY -->
 <div class="screen" id="s-lobby">
   <div class="tabs">
-    <button class="tab-btn active" onclick="showTab('create')">Cr&eacute;er</button>
-    <button class="tab-btn" onclick="showTab('join')">Rejoindre</button>
-    <button class="tab-btn" onclick="showTab('rules')">R&egrave;gles</button>
+    <button class="tab-btn active" id="tab-btn-create" onclick="showTab('create')">Créer</button>
+    <button class="tab-btn" id="tab-btn-join" onclick="showTab('join')">Rejoindre</button>
   </div>
-
-  <!-- CREATE -->
+  <!-- Créer -->
   <div id="tab-create">
-    <div id="c1">
-      <div class="input-group"><label>Ton pr&eacute;nom</label><input id="c-name" placeholder="Alice" maxlength="16"></div>
-      <div class="input-group"><label>Taille du plateau</label>
-        <select id="c-size">
-          <option value="6">6&times;6 (rapide)</option>
-          <option value="7" selected>7&times;7 (standard)</option>
-          <option value="8">8&times;8 (long)</option>
-        </select>
-      </div>
-      <div style="text-align:center"><button class="btn" onclick="hostCreate()">Cr&eacute;er la partie</button></div>
-      <p class="note" id="c-err" style="color:#c0392b"></p>
+    <div class="input-group">
+      <label>TON PSEUDO</label>
+      <input id="c-name" placeholder="Ex: Alice" maxlength="16">
     </div>
-    <div id="c2" style="display:none">
-      <p class="note">Partage ce code &agrave; ton ami&nbsp;:</p>
-      <div id="room-code-box">----</div>
-      <div style="text-align:center"><button class="btn sm sec" onclick="cpCode()">&#128203; Copier le code</button></div>
-      <p class="note"><span class="blink">&#9203;</span> En attente de ton ami&hellip;</p>
+    <div class="input-group">
+      <label>TAILLE DU PLATEAU</label>
+      <select id="c-size">
+        <option value="5" selected>5 × 5</option>
+        <option value="6">6 × 6</option>
+        <option value="7">7 × 7</option>
+      </select>
     </div>
+    <button class="btn" onclick="createGame()">Créer la partie</button>
+    <div class="err" id="c-err"></div>
   </div>
-
-  <!-- JOIN -->
+  <!-- Rejoindre -->
   <div id="tab-join" style="display:none">
-    <div class="input-group"><label>Ton pr&eacute;nom</label><input id="j-name" placeholder="Bob" maxlength="16"></div>
-    <div class="input-group"><label>Code de la partie</label>
-      <input id="j-code" placeholder="ABCD" maxlength="4" style="text-transform:uppercase;letter-spacing:.2em;font-size:1.3rem;text-align:center">
+    <div class="input-group">
+      <label>TON PSEUDO</label>
+      <input id="j-name" placeholder="Ex: Bob" maxlength="16">
     </div>
-    <div style="text-align:center"><button class="btn" onclick="joinCreate()">Rejoindre</button></div>
-    <p class="note" id="j-err" style="color:#c0392b"></p>
-  </div>
-
-  <!-- RULES -->
-  <div id="tab-rules" style="display:none">
-    <div class="rules-box">
-      <h3>But du jeu</h3>
-      <p>Bloquer l'adversaire &mdash; qu'il ne puisse plus d&eacute;placer aucune de ses capsules.</p>
-      <div class="sep"></div>
-      <h3>D&eacute;roulement d'un tour</h3>
-      <ul>
-        <li>Choisis une de tes capsules.</li>
-        <li>Compte toutes les capsules adjacentes (8 directions), peu importe leur couleur. C'est le nombre de cases &agrave; parcourir.</li>
-        <li>D&eacute;place ta capsule en ligne droite d'<b>exactement</b> ce nombre de cases.</li>
-        <li>Tu ne peux ni traverser ni t'arr&ecirc;ter sur une capsule ou une bouteille.</li>
-      </ul>
-      <div class="sep"></div>
-      <h3>Fin de partie</h3>
-      <p>Un joueur qui ne peut d&eacute;placer aucune capsule perd la partie.</p>
+    <div class="input-group">
+      <label>CODE DE LA PARTIE</label>
+      <input id="j-code" placeholder="XXXX" maxlength="4"
+        style="text-transform:uppercase;letter-spacing:.2em;font-size:1.3rem;text-align:center">
     </div>
+    <button class="btn" onclick="joinGame()">Rejoindre</button>
+    <div class="err" id="j-err"></div>
   </div>
 </div>
 
-<div id="game-area" style="display:none">
-  <div class="players-info">
-    <div class="player-panel" id="pp1">
-      <div class="pname"><span class="cap-dot dk"></span><span id="np1">J1</span></div>
-      <div class="psub">Capsules sombres</div>
+<!-- WAITING -->
+<div class="screen" id="s-wait" style="display:none">
+  <div style="text-align:center">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--gold);margin-bottom:16px">
+      EN ATTENTE D'UN ADVERSAIRE
     </div>
-    <div class="player-panel" id="pp2">
-      <div class="pname"><span class="cap-dot lt"></span><span id="np2">J2</span></div>
-      <div class="psub">Capsules claires</div>
+    <div style="font-size:.9rem;color:#a08860;margin-bottom:10px">Partage ce code :</div>
+    <div id="room-code"
+      style="font-family:'Bebas Neue',sans-serif;font-size:3rem;letter-spacing:.3em;
+             color:var(--cream);background:rgba(212,160,23,.1);border:1px solid rgba(212,160,23,.3);
+             border-radius:8px;padding:12px 24px;display:inline-block;margin-bottom:16px">
     </div>
+    <br>
+    <span class="status-badge badge-wait" id="wait-status">En attente…</span>
   </div>
-  <div id="turn-indicator">&mdash;</div>
-  <div id="message"></div>
-  <div id="board-wrap"><div id="board"><div class="board-inner" id="bi"></div></div></div>
-  <div class="legend"><span>&#127823; Cible valide</span><span>&#127919; Capsule s&eacute;lectionn&eacute;e</span></div>
-  <div style="text-align:center;margin-top:6px"><button class="btn danger" onclick="abandon()">Abandonner</button></div>
 </div>
 
-<div class="screen" id="s-gameover" style="display:none">
+<!-- GAME -->
+<div id="game-area">
+  <div class="game-header">
+    <div class="player-tag p1" id="tag-p1">—</div>
+    <div id="turn-indicator">…</div>
+    <div class="player-tag p2" id="tag-p2">—</div>
+  </div>
+  <div><div id="board"></div></div>
+  <div class="game-footer">
+    <button class="btn btn-sm btn-danger" onclick="abandon()">Abandonner</button>
+    <span id="status-msg"></span>
+  </div>
+</div>
+
+<!-- GAMEOVER -->
+<div class="screen" id="s-gameover" style="display:none;text-align:center">
   <div id="winner-text"></div>
-  <p style="color:#a08860;margin-bottom:18px;text-align:center" id="go-msg"></p>
-  <div style="text-align:center"><button class="btn" onclick="backLobby()">Nouvelle partie</button></div>
+  <div id="go-msg"></div>
+  <button class="btn" onclick="backLobby()">Retour au lobby</button>
 </div>
-
-<!-- PeerJS CDN -->
-<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 
 <script>
-// ── State ────────────────────────────────────────────────────────────────────
-let peer, conn;
-let myRole  = null;   // 'p1' | 'p2'
-let myName  = '', oppName = '';
-let gs      = null;   // game state
-let sel     = null;   // selected cell [r,c]
-let BS      = 7;
-let currentCode = '';
+// ── État global ───────────────────────────────────────────────────────────────
+let peer = null, conn = null;
+let myRole = null, myName = '', oppName = '';
+let gs = null, sel = null;
 
-// ── Utilities ────────────────────────────────────────────────────────────────
-function genCode() {
-  return Math.random().toString(36).slice(2,6).toUpperCase();
+// ── Tabs ──────────────────────────────────────────────────────────────────────
+function showTab(t) {
+  document.getElementById('tab-create').style.display = t === 'create' ? 'block' : 'none';
+  document.getElementById('tab-join').style.display   = t === 'join'   ? 'block' : 'none';
+  document.getElementById('tab-btn-create').classList.toggle('active', t === 'create');
+  document.getElementById('tab-btn-join').classList.toggle('active',   t === 'join');
 }
 
-function send(obj) {
-  if (conn && conn.open) conn.send(JSON.stringify(obj));
+// ── Code aléatoire 4 lettres ──────────────────────────────────────────────────
+function randCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+  let s = '';
+  for (let i = 0; i < 4; i++) s += chars[Math.floor(Math.random() * chars.length)];
+  return s;
 }
 
-function showTab(name) {
-  ['create','join','rules'].forEach(t => {
-    document.getElementById('tab-'+t).style.display = (t===name) ? 'block' : 'none';
-  });
-  document.querySelectorAll('.tab-btn').forEach((b,i) => {
-    b.classList.toggle('active', ['create','join','rules'][i]===name);
-  });
-}
-
-function cpCode() {
-  navigator.clipboard.writeText(currentCode).catch(()=>{});
-}
-
-// ── Host ─────────────────────────────────────────────────────────────────────
-function hostCreate() {
-  myName  = document.getElementById('c-name').value.trim() || 'Joueur 1';
-  BS      = parseInt(document.getElementById('c-size').value);
-  myRole  = 'p1';
-  currentCode = genCode();
-  document.getElementById('c-err').textContent = '';
+// ── Créer une partie ──────────────────────────────────────────────────────────
+function createGame() {
+  const errEl = document.getElementById('c-err');
+  errEl.textContent = '';
+  myName = document.getElementById('c-name').value.trim() || 'Joueur 1';
+  const sz = parseInt(document.getElementById('c-size').value);
+  myRole = 'p1';
+  const code = randCode();
 
   if (peer) { peer.destroy(); peer = null; }
 
   try {
-    peer = new Peer('topcap-' + currentCode);
+    peer = new Peer('TC-' + code);
   } catch(e) {
-    document.getElementById('c-err').textContent = 'Erreur PeerJS : ' + e.message;
+    errEl.textContent = 'Erreur PeerJS : ' + e.message;
     return;
   }
 
+  peer.on('error', e => {
+    errEl.textContent = 'Erreur : ' + e.message;
+    document.getElementById('s-wait').style.display = 'none';
+    document.getElementById('s-lobby').style.display = 'block';
+  });
+
   peer.on('open', () => {
-    document.getElementById('c1').style.display = 'none';
-    document.getElementById('c2').style.display = 'block';
-    document.getElementById('room-code-box').textContent = currentCode;
+    document.getElementById('s-lobby').style.display = 'none';
+    document.getElementById('s-wait').style.display  = 'block';
+    document.getElementById('room-code').textContent = code;
+    document.getElementById('wait-status').textContent  = 'En attente d\'un joueur…';
+    document.getElementById('wait-status').className    = 'status-badge badge-wait';
   });
 
   peer.on('connection', c => {
     conn = c;
     setupConn();
-  });
-
-  peer.on('error', e => {
-    document.getElementById('c-err').textContent = 'Erreur : ' + e.message;
-    document.getElementById('c1').style.display = 'block';
-    document.getElementById('c2').style.display = 'none';
+    conn.on('open', () => {
+      // L'hôte envoie ses infos + taille du plateau
+      conn.send({ t: 'init', name: myName, sz });
+      document.getElementById('wait-status').textContent = 'Adversaire connecté !';
+      document.getElementById('wait-status').className   = 'status-badge badge-ok';
+    });
   });
 }
 
-// ── Join ─────────────────────────────────────────────────────────────────────
-function joinCreate() {
+// ── Rejoindre une partie ──────────────────────────────────────────────────────
+function joinGame() {
+  const errEl = document.getElementById('j-err');
+  errEl.textContent = '';
   myName = document.getElementById('j-name').value.trim() || 'Joueur 2';
-  myRole = 'p2';
   const code = document.getElementById('j-code').value.trim().toUpperCase();
-  if (!code || code.length < 4) {
-    document.getElementById('j-err').textContent = 'Entre un code à 4 lettres.';
-    return;
-  }
-  document.getElementById('j-err').textContent = 'Connexion...';
+  if (code.length !== 4) { errEl.textContent = 'Entre un code à 4 lettres.'; return; }
+  myRole = 'p2';
+  errEl.textContent = '⏳ Connexion…';
 
   if (peer) { peer.destroy(); peer = null; }
 
   try {
     peer = new Peer();
   } catch(e) {
-    document.getElementById('j-err').textContent = 'Erreur PeerJS : ' + e.message;
+    errEl.textContent = 'Erreur PeerJS : ' + e.message;
     return;
   }
+
+  peer.on('error', e => { errEl.textContent = 'Erreur : ' + e.message; });
 
   peer.on('open', () => {
-    document.getElementById('j-err').textContent = 'Connexion au salon...';
-    conn = peer.connect('topcap-' + code, { reliable: true });
+    conn = peer.connect('TC-' + code, { reliable: true });
     setupConn();
-  });
-
-  peer.on('error', e => {
-    document.getElementById('j-err').textContent = 'Erreur : ' + e.message;
+    conn.on('open', () => {
+      errEl.textContent = '';
+      conn.send({ t: 'join', name: myName });
+    });
   });
 }
 
-// ── Connection setup (runs for both players) ─────────────────────────────────
+// ── Gestion connexion ─────────────────────────────────────────────────────────
 function setupConn() {
-  conn.on('open', () => {
-    // Both players announce themselves
-    send({ t: 'hello', name: myName, role: myRole });
-
-    // Host initialises the board and waits for hello back
-    if (myRole === 'p1') {
-      startGame();
-    } else {
-      document.getElementById('j-err').textContent = 'Connecté ! En attente du lancement...';
-    }
-  });
-
-  conn.on('data', raw => {
-    let msg;
-    try { msg = (typeof raw === 'string') ? JSON.parse(raw) : raw; }
-    catch(e) { return; }
-    handleMsg(msg);
-  });
-
+  conn.on('data', onData);
   conn.on('close', () => {
-    if (gs && !gs.over) {
-      endGame(myRole, 'L\'adversaire s\'est déconnecté.');
-    }
+    if (gs && !gs.over) endGame(myRole === 'p1' ? 'p2' : 'p1', 'Adversaire déconnecté.');
   });
-
-  conn.on('error', e => {
-    console.error('conn error', e);
-  });
+  conn.on('error', e => console.warn('conn error', e));
 }
 
-// ── Message handler ───────────────────────────────────────────────────────────
-function handleMsg(msg) {
-  switch (msg.t) {
+function send(msg) { if (conn && conn.open) conn.send(msg); }
 
-    case 'hello':
-      // Both sides learn the opponent name
-      oppName = msg.name || 'Adversaire';
-
-      if (myRole === 'p1') {
-        // Host: send the full game state and start for both
-        send({
-          t: 'start',
-          gs: gs,
-          bs: BS,
-          p1name: myName,
-          p2name: oppName
-        });
-        showGame();
-      }
-      break;
-
-    case 'start':
-      // Guest receives the initial game state from host
-      gs      = msg.gs;
-      BS      = msg.bs;
-      oppName = msg.p1name || 'Adversaire';
-      showGame();
-      break;
-
-    case 'move':
-      applyMove(msg.f, msg.to, false);
-      break;
-
-    case 'abandon':
-      endGame(myRole, 'L\'adversaire a abandonné.');
-      break;
+// ── Réception messages ────────────────────────────────────────────────────────
+function onData(msg) {
+  // P2 reçoit init de P1
+  if (msg.t === 'init') {
+    oppName = msg.name;
+    gs = initGame(msg.sz);
+    gs.names = { p1: oppName, p2: myName };
+    startGameUI();
+    // P2 confirme
+    send({ t: 'ready', name: myName });
+  }
+  // P1 reçoit ready de P2
+  if (msg.t === 'ready') {
+    oppName = msg.name;
+    if (!gs) gs = initGame(parseInt(document.getElementById('c-size').value));
+    gs.names = { p1: myName, p2: oppName };
+    startGameUI();
+  }
+  // Mouvement adverse
+  if (msg.t === 'move') {
+    applyMove(msg.from, msg.to, false);
+  }
+  // Abandon adverse
+  if (msg.t === 'abandon') {
+    endGame(myRole, 'L\'adversaire a abandonné !');
   }
 }
 
-// ── Game Logic ────────────────────────────────────────────────────────────────
-function initBoard(sz) {
-  const b = Array.from({length:sz}, () => Array(sz).fill(null));
-  b[0][0]         = { p:'p1', t:'bot' };
-  b[sz-1][sz-1]   = { p:'p2', t:'bot' };
-  [[0,1],[0,2],[1,0],[2,0]].forEach(([r,c]) => b[r][c] = { p:'p1', t:'cap' });
-  [[sz-1,sz-2],[sz-1,sz-3],[sz-2,sz-1],[sz-3,sz-1]].forEach(([r,c]) => b[r][c] = { p:'p2', t:'cap' });
-  return b;
-}
+// ── Initialisation plateau ────────────────────────────────────────────────────
+function initGame(sz) {
+  const b = [];
+  for (let r = 0; r < sz; r++) { b.push([]); for (let c = 0; c < sz; c++) b[r].push(null); }
 
-function startGame() {
-  gs = { b: initBoard(BS), turn:'p1', sz:BS, over:false, winner:null };
-}
-
-function adjCount(b, r, c, sz) {
-  let n = 0;
-  for (let dr=-1; dr<=1; dr++) {
-    for (let dc=-1; dc<=1; dc++) {
-      if (!dr && !dc) continue;
-      const rr=r+dr, cc=c+dc;
-      if (rr>=0 && rr<sz && cc>=0 && cc<sz && b[rr][cc]) n++;
-    }
-  }
-  return n;
-}
-
-function validMoves(b, r, c, sz) {
-  const steps = adjCount(b, r, c, sz);
-  if (!steps) return [];
-  const dirs = [[-1,0],[1,0],[0,-1],[0,1],[-1,-1],[-1,1],[1,-1],[1,1]];
-  const result = [];
-  dirs.forEach(([dr,dc]) => {
-    let rr=r, cc=c, ok=true;
-    for (let i=0; i<steps; i++) {
-      rr+=dr; cc+=dc;
-      if (rr<0||rr>=sz||cc<0||cc>=sz||b[rr][cc]) { ok=false; break; }
-    }
-    if (ok) result.push([rr,cc]);
-  });
-  return result;
-}
-
-function hasAnyMove(b, player, sz) {
-  for (let r=0; r<sz; r++) {
-    for (let c=0; c<sz; c++) {
-      const cell = b[r][c];
-      if (cell && cell.p===player && cell.t==='cap' && validMoves(b,r,c,sz).length) return true;
-    }
-  }
-  return false;
-}
-
-function applyMove(from, to, local) {
-  const b = gs.b;
-  b[to[0]][to[1]] = b[from[0]][from[1]];
-  b[from[0]][from[1]] = null;
-
-  const prev = gs.turn;
-  gs.turn = (prev==='p1') ? 'p2' : 'p1';
-
-  if (!hasAnyMove(b, gs.turn, gs.sz)) {
-    gs.over   = true;
-    gs.winner = prev;
+  if (sz === 5) {
+    b[0][0] = { t:'bottle', p:'p1' };
+    b[4][4] = { t:'bottle', p:'p2' };
+    b[1][1] = { t:'cap', p:'p1' };
+    b[1][2] = { t:'cap', p:'p1' };
+    b[1][3] = { t:'cap', p:'p1' };
+    b[1][4] = { t:'cap', p:'p1' };
+    b[3][0] = { t:'cap', p:'p2' };
+    b[3][1] = { t:'cap', p:'p2' };
+    b[3][2] = { t:'cap', p:'p2' };
+    b[3][3] = { t:'cap', p:'p2' };
+  } else {
+    const last = sz - 1;
+    b[0][0]       = { t:'bottle', p:'p1' };
+    b[last][last] = { t:'bottle', p:'p2' };
+    for (let c = 1; c < sz; c++)      b[1][c]        = { t:'cap', p:'p1' };
+    for (let c = 0; c < sz - 1; c++) b[last-1][c]   = { t:'cap', p:'p2' };
   }
 
-  sel = null;
-  renderBoard();
-  updateUI();
-
-  if (local) send({ t:'move', f:from, to:to });
-  if (gs.over) endGame(gs.winner, (gs.winner===myRole ? myName : oppName) + ' a gagné !');
+  return { b, sz, turn:'p1', over:false, winner:null, names:{p1:'',p2:''} };
 }
 
-function isMyTurn() {
-  return gs && !gs.over && gs.turn===myRole;
-}
-
-// ── Rendering ─────────────────────────────────────────────────────────────────
-function showGame() {
+// ── Démarrer l'UI de jeu ──────────────────────────────────────────────────────
+function startGameUI() {
   document.getElementById('s-lobby').style.display   = 'none';
-  document.getElementById('s-gameover').style.display = 'none';
-  document.getElementById('game-area').style.display  = 'flex';
-
-  // p1 is always dark caps, p2 is light caps
-  document.getElementById('np1').textContent = (myRole==='p1') ? myName : oppName;
-  document.getElementById('np2').textContent = (myRole==='p2') ? myName : oppName;
-
-  document.getElementById('board').style.setProperty('--sz', gs.sz);
+  document.getElementById('s-wait').style.display    = 'none';
+  document.getElementById('game-area').style.display = 'flex';
+  document.getElementById('tag-p1').textContent = '⚪ ' + gs.names.p1;
+  document.getElementById('tag-p2').textContent = '⚫ ' + gs.names.p2;
   renderBoard();
   updateUI();
 }
 
-function renderBoard() {
-  if (!gs) return;
-  const bi = document.getElementById('bi');
-  bi.innerHTML = '';
-  const sz = gs.sz;
-  bi.style.gridTemplateColumns = `repeat(${sz},1fr)`;
-  bi.style.gridTemplateRows    = `repeat(${sz},1fr)`;
-
-  const moves = (sel && isMyTurn())
-    ? validMoves(gs.b, sel[0], sel[1], sz)
-    : [];
-
-  for (let r=0; r<sz; r++) {
-    for (let c=0; c<sz; c++) {
-      const div  = document.createElement('div');
-      div.className = 'cell';
-      div.dataset.r = r;
-      div.dataset.c = c;
-
-      const isTarget = moves.some(m => m[0]===r && m[1]===c);
-      if (isTarget) div.classList.add('target');
-
-      const cell = gs.b[r][c];
-      if (cell) {
-        const el = document.createElement('div');
-        if (cell.t === 'cap') {
-          el.className = 'cap ' + (cell.p==='p1' ? 'dk' : 'lt');
-          if (sel && sel[0]===r && sel[1]===c) el.classList.add('picked');
-        } else {
-          el.className = 'bottle ' + (cell.p==='p1' ? 'dk' : 'lt');
-          el.textContent = '🍺';
-        }
-        div.appendChild(el);
-      }
-
-      div.addEventListener('click', () => onCellClick(r, c));
-      bi.appendChild(div);
-    }
-  }
-}
-
-function onCellClick(r, c) {
-  if (!isMyTurn()) {
-    document.getElementById('message').textContent = 'Ce n\'est pas ton tour.';
-    return;
-  }
-
-  const cell  = gs.b[r][c];
-  const moves = sel ? validMoves(gs.b, sel[0], sel[1], gs.sz) : [];
-
-  // Click on a valid target -> move
-  if (sel && moves.some(m => m[0]===r && m[1]===c)) {
-    applyMove(sel, [r,c], true);
-    document.getElementById('message').textContent = '';
-    return;
-  }
-
-  // Click on own cap -> select
-  if (cell && cell.p===myRole && cell.t==='cap') {
-    sel = [r, c];
-    renderBoard();
-    const mv = validMoves(gs.b, r, c, gs.sz);
-    document.getElementById('message').textContent = mv.length
-      ? `${mv.length} déplacement(s) possible(s) — ${adjCount(gs.b,r,c,gs.sz)} case(s)`
-      : 'Aucun déplacement possible pour cette capsule.';
-    return;
-  }
-
-  // Click elsewhere -> deselect
-  sel = null;
-  renderBoard();
-  document.getElementById('message').textContent = '';
-}
+// ── Vérifications ─────────────────────────────────────────────────────────────
+function isMyTurn() { return gs && gs.turn === myRole; }
 
 function updateUI() {
   if (!gs) return;
-  const ti = document.getElementById('turn-indicator');
-  if (gs.over) {
-    ti.textContent = 'Partie terminée';
-  } else {
-    ti.textContent = isMyTurn()
-      ? '→ C\'est ton tour !' 
-      : '⏳ Tour de ' + (gs.turn===myRole ? myName : oppName);
+  const myT = isMyTurn();
+  document.getElementById('tag-p1').classList.toggle('active-tag', gs.turn === 'p1');
+  document.getElementById('tag-p2').classList.toggle('active-tag', gs.turn === 'p2');
+  document.getElementById('turn-indicator').textContent =
+    gs.over ? 'Partie terminée' : myT ? 'C\'est ton tour !' : 'Tour de ' + gs.names[gs.turn];
+  document.getElementById('status-msg').textContent =
+    sel ? 'Capsule sélectionnée — choisir la destination' : myT ? 'Sélectionne une capsule' : '';
+
+  // Vérifier blocage
+  if (!gs.over && myT) {
+    const caps = findCaps(gs.b, myRole, gs.sz);
+    const anyMove = caps.some(([r,c]) => validMoves(gs.b,r,c,myRole,gs.sz).length > 0);
+    if (!anyMove) {
+      const opp = myRole === 'p1' ? 'p2' : 'p1';
+      endGame(opp, gs.names[myRole] + ' ne peut plus bouger !');
+    }
   }
-  document.getElementById('pp1').classList.toggle('active', gs.turn==='p1' && !gs.over);
-  document.getElementById('pp2').classList.toggle('active', gs.turn==='p2' && !gs.over);
 }
 
+// ── Rendu plateau ─────────────────────────────────────────────────────────────
+function renderBoard() {
+  const board = document.getElementById('board');
+  const sz = gs.sz;
+  board.style.gridTemplateColumns = `repeat(${sz},72px)`;
+  board.innerHTML = '';
+
+  let validSet = new Set(), winSet = new Set();
+  if (sel) {
+    validMoves(gs.b, sel[0], sel[1], gs.turn, sz).forEach(([r,c]) => {
+      const cell = gs.b[r][c];
+      if (cell && cell.t === 'bottle' && cell.p !== gs.turn) winSet.add(r+','+c);
+      else validSet.add(r+','+c);
+    });
+  }
+
+  for (let r = 0; r < sz; r++) {
+    for (let c = 0; c < sz; c++) {
+      const div = document.createElement('div');
+      div.className = 'cell ' + ((r+c)%2===0 ? 'light' : 'dark');
+      const key = r+','+c;
+
+      if (sel && sel[0]===r && sel[1]===c) div.classList.add('selected-cell');
+      else if (winSet.has(key))   div.classList.add('highlighted-win');
+      else if (validSet.has(key)) div.classList.add('highlighted');
+
+      div.addEventListener('click', () => onCellClick(r,c));
+
+      const piece = gs.b[r][c];
+      if (piece) {
+        const pd = document.createElement('div');
+        pd.className = 'piece';
+
+        if (piece.t === 'cap') {
+          pd.classList.add(piece.p === 'p1' ? 'cap-p1' : 'cap-p2');
+          pd.textContent = piece.p === 'p1' ? '⚪' : '⚫';
+          if (sel && sel[0]===r && sel[1]===c) pd.classList.add('selected-piece');
+
+          if (piece.p === myRole) {
+            const adj = adjCount(gs.b, r, c, sz);
+            if (adj > 0) {
+              const badge = document.createElement('div');
+              badge.className = 'adj-count';
+              badge.textContent = adj;
+              pd.appendChild(badge);
+            }
+            pd.addEventListener('click', e => { e.stopPropagation(); onCapClick(r,c); });
+          }
+        } else {
+          pd.classList.add(piece.p === 'p1' ? 'bottle-p1' : 'bottle-p2');
+          pd.textContent = '🍾';
+        }
+        div.appendChild(pd);
+      }
+      board.appendChild(div);
+    }
+  }
+}
+
+// ── Logique de jeu ────────────────────────────────────────────────────────────
+function adjCount(b, r, c, sz) {
+  let n = 0;
+  for (let dr = -1; dr <= 1; dr++)
+    for (let dc = -1; dc <= 1; dc++) {
+      if (dr===0 && dc===0) continue;
+      const nr=r+dr, nc=c+dc;
+      if (nr>=0&&nr<sz&&nc>=0&&nc<sz && b[nr][nc] && b[nr][nc].t==='cap') n++;
+    }
+  return n;
+}
+
+function validMoves(b, r, c, player, sz) {
+  const steps = adjCount(b, r, c, sz);
+  if (steps === 0) return [];
+  const dirs = [[0,1],[0,-1],[1,0],[-1,0],[1,1],[1,-1],[-1,1],[-1,-1]];
+  const moves = [];
+  const opp = player === 'p1' ? 'p2' : 'p1';
+
+  for (const [dr,dc] of dirs) {
+    let blocked = false;
+    for (let s = 1; s <= steps; s++) {
+      const nr=r+dr*s, nc=c+dc*s;
+      if (nr<0||nr>=sz||nc<0||nc>=sz) { blocked=true; break; }
+      const cell = b[nr][nc];
+      if (cell) {
+        if (cell.t === 'cap') { blocked=true; break; }
+        if (cell.t === 'bottle' && cell.p === player) { blocked=true; break; }
+        if (cell.t === 'bottle' && cell.p === opp) {
+          if (s === steps) moves.push([nr,nc]);
+          blocked=true; break;
+        }
+      }
+    }
+    if (!blocked) {
+      const nr=r+dr*steps, nc=c+dc*steps;
+      if (nr>=0&&nr<sz&&nc>=0&&nc<sz&&!b[nr][nc]) moves.push([nr,nc]);
+    }
+  }
+  return moves;
+}
+
+function findCaps(b, player, sz) {
+  const res = [];
+  for (let r=0;r<sz;r++) for (let c=0;c<sz;c++)
+    if (b[r][c] && b[r][c].t==='cap' && b[r][c].p===player) res.push([r,c]);
+  return res;
+}
+
+// ── Appliquer un mouvement ────────────────────────────────────────────────────
+function applyMove(from, to, isMine) {
+  const [fr,fc] = from, [tr,tc] = to;
+  const piece = gs.b[fr][fc];
+  if (!piece) return;
+
+  const target = gs.b[tr][tc];
+  const won = target && target.t==='bottle' && target.p !== piece.p;
+
+  gs.b[tr][tc] = piece;
+  gs.b[fr][fc] = null;
+  sel = null;
+
+  if (isMine) send({ t:'move', from, to });
+
+  if (won) {
+    renderBoard();
+    endGame(piece.p, gs.names[piece.p]+' a recouvert la bouteille de '+gs.names[piece.p==='p1'?'p2':'p1']+' !');
+    return;
+  }
+
+  gs.turn = gs.turn === 'p1' ? 'p2' : 'p1';
+  renderBoard();
+  updateUI();
+}
+
+// ── Clics ─────────────────────────────────────────────────────────────────────
+function onCapClick(r, c) {
+  if (!isMyTurn() || gs.over) return;
+  sel = (sel && sel[0]===r && sel[1]===c) ? null : [r,c];
+  renderBoard(); updateUI();
+}
+
+function onCellClick(r, c) {
+  if (!isMyTurn() || gs.over) return;
+  if (sel) {
+    const vm = validMoves(gs.b, sel[0], sel[1], gs.turn, gs.sz);
+    if (vm.some(([mr,mc]) => mr===r && mc===c)) {
+      applyMove(sel, [r,c], true);
+      return;
+    }
+  }
+  const piece = gs.b[r][c];
+  if (piece && piece.t==='cap' && piece.p===myRole) {
+    sel = [r,c];
+  } else {
+    sel = null;
+  }
+  renderBoard(); updateUI();
+}
+
+// ── Fin de partie ─────────────────────────────────────────────────────────────
 function endGame(winner, msg) {
-  gs.over   = true;
-  gs.winner = winner;
-  document.getElementById('game-area').style.display   = 'none';
-  document.getElementById('s-gameover').style.display  = 'block';
-  document.getElementById('winner-text').textContent =
-    (winner===myRole) ? '🏆 Victoire !' : '😞 Défaite';
-  document.getElementById('go-msg').textContent = msg;
+  if (!gs || gs.over) return;
+  gs.over = true; gs.winner = winner;
+  setTimeout(() => {
+    document.getElementById('game-area').style.display  = 'none';
+    document.getElementById('s-gameover').style.display = 'block';
+    document.getElementById('winner-text').textContent  = winner===myRole ? '🏆 Victoire !' : '😞 Défaite';
+    document.getElementById('go-msg').textContent = msg;
+  }, 600);
 }
 
 function abandon() {
   if (!confirm('Abandonner la partie ?')) return;
   send({ t:'abandon' });
-  endGame((myRole==='p1'?'p2':'p1'), 'Tu as abandonné.');
+  endGame(myRole==='p1' ? 'p2' : 'p1', 'Tu as abandonné.');
 }
 
 function backLobby() {
   document.getElementById('s-gameover').style.display = 'none';
   document.getElementById('s-lobby').style.display    = 'block';
-  document.getElementById('c1').style.display = 'block';
-  document.getElementById('c2').style.display = 'none';
+  document.getElementById('tab-create').style.display = 'block';
+  document.getElementById('tab-join').style.display   = 'none';
+  document.getElementById('tab-btn-create').classList.add('active');
+  document.getElementById('tab-btn-join').classList.remove('active');
+  document.getElementById('c-err').textContent = '';
+  document.getElementById('j-err').textContent = '';
   if (peer) { peer.destroy(); peer = null; }
   conn=null; gs=null; sel=null; myRole=null;
 }
