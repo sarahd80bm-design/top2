@@ -15,7 +15,7 @@
 body{
   background:#1a1209;
   background-image:radial-gradient(ellipse at 20% 20%,#2d1f00 0%,transparent 60%),
-                   radial-gradient(ellipse at 80% 80%,#0d0800 0%,transparent 60%);
+                    radial-gradient(ellipse at 80% 80%,#0d0800 0%,transparent 60%);
   min-height:100vh;font-family:'Crimson Pro',serif;color:var(--cream);
   display:flex;flex-direction:column;align-items:center;
 }
@@ -26,544 +26,546 @@ header h1{
   text-shadow:0 0 30px rgba(212,160,23,.4),2px 2px 0 var(--wood-dark);line-height:1;
 }
 header p{font-style:italic;color:#a08860;font-size:.9rem;margin-top:2px}
+
 .screen{
   background:rgba(255,255,255,.04);border:1px solid rgba(212,160,23,.25);
-  border-radius:12px;padding:24px;margin:12px auto;max-width:480px;width:92%;
+  border-radius:12px;padding:24px;margin:12px auto;max-width:560px;width:92%;
 }
-.tabs{display:flex;gap:6px;margin-bottom:20px;justify-content:center}
+.tabs{display:flex;gap:6px;margin-bottom:20px;justify-content:center;flex-wrap:wrap}
 .tab-btn{
   background:transparent;border:1px solid rgba(212,160,23,.3);border-radius:6px;
-  padding:7px 18px;color:#a08860;font-family:'Bebas Neue',sans-serif;
-  font-size:.95rem;cursor:pointer;transition:all .2s;
+  padding:7px 18px;color:var(--cream);cursor:pointer;font-family:'Crimson Pro',serif;
+  font-size:.95rem;transition:.2s;
 }
-.tab-btn.active,.tab-btn:hover{background:rgba(212,160,23,.15);color:var(--gold);border-color:var(--gold)}
+.tab-btn:hover{background:rgba(212,160,23,.15)}
+.tab-btn.active{background:var(--gold);color:var(--dark);font-weight:600}
 .tab-content{display:none}
 .tab-content.active{display:block}
-.input-group{margin-bottom:14px}
-.input-group label{display:block;font-size:.82rem;color:#a08860;margin-bottom:4px;letter-spacing:.05em}
-.input-group input,.input-group select{
-  width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(212,160,23,.25);
-  border-radius:6px;padding:9px 12px;color:var(--cream);font-family:'Crimson Pro',serif;
-  font-size:1rem;outline:none;transition:border .2s;
+
+label{display:block;margin:10px 0 4px;color:var(--wood-light);font-weight:600;font-size:.95rem}
+input[type=text]{
+  width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--wood);
+  background:rgba(0,0,0,.35);color:var(--cream);font-size:1rem;font-family:inherit;
 }
-.input-group input:focus,.input-group select:focus{border-color:var(--gold)}
-.input-group select option{background:#2d1f00}
 .btn{
-  background:linear-gradient(135deg,var(--wood-light),var(--wood));border:none;
-  border-radius:8px;padding:10px 28px;color:#1a0f00;font-family:'Bebas Neue',sans-serif;
-  font-size:1.1rem;letter-spacing:.08em;cursor:pointer;transition:all .2s;
-  box-shadow:0 3px 10px rgba(0,0,0,.4);width:100%;margin-top:4px;
+  display:inline-block;margin-top:14px;padding:10px 28px;border:none;border-radius:8px;
+  background:linear-gradient(135deg,var(--gold),#b8860b);color:var(--dark);
+  font-family:'Bebas Neue',sans-serif;font-size:1.15rem;letter-spacing:.08em;
+  cursor:pointer;transition:.2s;
 }
-.btn:hover{filter:brightness(1.15);transform:translateY(-1px)}
-.btn-sm{padding:6px 16px;font-size:.85rem;width:auto;margin-top:0}
-.btn-danger{background:linear-gradient(135deg,#c0392b,#922b21);color:#fff}
-.err{color:#e74c3c;font-size:.82rem;margin-top:6px;min-height:18px}
-.rules-list{list-style:none;padding:0}
-.rules-list li{
-  padding:8px 0;border-bottom:1px solid rgba(212,160,23,.1);
-  font-size:.95rem;color:#d0c8b0;line-height:1.5;
+.btn:hover{filter:brightness(1.15);transform:scale(1.03)}
+.btn:disabled{opacity:.4;cursor:default;transform:none}
+.err{color:var(--red);font-size:.85rem;margin-top:6px;min-height:1.2em}
+.info-box{
+  margin-top:12px;padding:12px;border-radius:8px;
+  background:rgba(212,160,23,.08);border:1px solid rgba(212,160,23,.2);
+  font-size:.92rem;display:none;
 }
-.rules-list li:last-child{border-bottom:none}
-.rules-list li::before{content:'▶ ';color:var(--gold);font-size:.7rem}
-.status-badge{
-  display:inline-block;padding:4px 12px;border-radius:20px;font-size:.78rem;
-  letter-spacing:.06em;font-family:'Bebas Neue',sans-serif;
+.info-box code{
+  background:rgba(0,0,0,.3);padding:2px 8px;border-radius:4px;
+  font-size:1rem;color:var(--gold);user-select:all;
 }
-.badge-wait{background:rgba(212,160,23,.2);color:var(--gold);border:1px solid rgba(212,160,23,.4)}
-.badge-ok{background:rgba(39,174,96,.2);color:#2ecc71;border:1px solid rgba(39,174,96,.4)}
 
-#game-area{display:none;flex-direction:column;align-items:center;width:100%;padding:12px 0 24px}
-.game-header{
-  display:flex;align-items:center;justify-content:space-between;
-  width:92%;max-width:460px;margin-bottom:10px;
+/* Board */
+#game-area{display:none;text-align:center;padding:12px 0 40px}
+#turn-bar{
+  font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.06em;
+  margin-bottom:10px;min-height:2em;
 }
-.player-tag{
-  font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.08em;
-  padding:5px 14px;border-radius:20px;border:2px solid transparent;transition:all .3s;
+#board-wrap{
+  display:inline-block;padding:18px;border-radius:14px;
+  background:linear-gradient(145deg,#6b4c11,#3a2805);
+  box-shadow:0 8px 30px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.08);
 }
-.player-tag.p1{background:rgba(240,232,208,.08);border-color:rgba(240,232,208,.3);color:var(--cream)}
-.player-tag.p2{background:rgba(31,26,20,.3);border-color:rgba(100,80,40,.4);color:#888}
-.player-tag.active-tag{box-shadow:0 0 12px rgba(212,160,23,.5);border-color:var(--gold);color:var(--gold)}
-#turn-indicator{font-size:.8rem;color:#a08860;font-style:italic;text-align:center}
-
 #board{
-  display:grid;border-radius:8px;overflow:hidden;
-  border:3px solid var(--wood-dark);
-  box-shadow:0 8px 32px rgba(0,0,0,.6),inset 0 0 40px rgba(0,0,0,.2);
+  display:grid;
+  grid-template-columns:repeat(6,clamp(44px,12vw,72px));
+  grid-template-rows:repeat(6,clamp(44px,12vw,72px));
+  gap:2px;
 }
 .cell{
-  width:72px;height:72px;display:flex;align-items:center;justify-content:center;
-  position:relative;cursor:pointer;transition:background .15s;
+  position:relative;border-radius:6px;cursor:pointer;
+  transition:background .15s;
 }
-.cell.light{background:#c4973a}
-.cell.dark{background:#a07828}
-.cell:hover{filter:brightness(1.1)}
-.cell.highlighted{background:rgba(39,174,96,.45)!important;box-shadow:inset 0 0 8px rgba(39,174,96,.6)}
-.cell.highlighted-win{background:rgba(192,57,43,.55)!important;box-shadow:inset 0 0 8px rgba(192,57,43,.7)}
-.cell.selected-cell{background:rgba(212,160,23,.45)!important;box-shadow:inset 0 0 10px rgba(212,160,23,.7)}
+.cell.light{background:#c8a95e}
+.cell.dark{background:#8B6914}
+.cell:hover{filter:brightness(1.12)}
+.cell.sel{box-shadow:inset 0 0 0 3px var(--gold),0 0 12px rgba(212,160,23,.5)}
+.cell.hl::after{
+  content:'';position:absolute;inset:20%;border-radius:50%;
+  background:rgba(39,174,96,.55);pointer-events:none;
+  animation:pulse 1s infinite alternate;
+}
+@keyframes pulse{from{transform:scale(.8);opacity:.6}to{transform:scale(1.1);opacity:1}}
+
+/* Pieces */
 .piece{
-  width:58px;height:58px;border-radius:50%;display:flex;align-items:center;
-  justify-content:center;font-size:1.6rem;position:relative;
-  transition:transform .15s;user-select:none;
-  box-shadow:0 3px 8px rgba(0,0,0,.5),inset 0 1px 3px rgba(255,255,255,.2);
-}
-.piece.cap-p1{
-  background:radial-gradient(circle at 35% 30%,#f0f0f0,#d0d0d0 60%,#a0a0a0);
-  border:2px solid #888;color:#333;cursor:pointer;
-}
-.piece.cap-p2{
-  background:radial-gradient(circle at 35% 30%,#4a3f30,#1f1a14 60%,#0a0805);
-  border:2px solid #5c4a2a;color:#c49a3c;cursor:pointer;
-}
-.piece.bottle-p1{
-  background:radial-gradient(circle at 40% 30%,rgba(200,240,255,.7),rgba(100,200,220,.4));
-  border:2px solid rgba(150,220,240,.6);color:#fff;font-size:1.8rem;
-  box-shadow:0 3px 12px rgba(100,200,255,.3),inset 0 1px 3px rgba(255,255,255,.5);
-}
-.piece.bottle-p2{
-  background:radial-gradient(circle at 40% 30%,rgba(80,60,40,.8),rgba(40,30,15,.9));
-  border:2px solid rgba(120,90,40,.7);color:#c49a3c;font-size:1.8rem;
-  box-shadow:0 3px 12px rgba(0,0,0,.5),inset 0 1px 3px rgba(255,255,255,.1);
-}
-.piece.selected-piece{
-  box-shadow:0 0 0 3px var(--gold),0 4px 12px rgba(212,160,23,.5);
-  transform:scale(1.1);
-}
-.adj-count{
-  position:absolute;bottom:-2px;right:-2px;
-  background:var(--gold);color:#1a0f00;border-radius:50%;
-  width:18px;height:18px;font-size:.65rem;font-weight:700;
+  position:absolute;inset:8%;border-radius:50%;
   display:flex;align-items:center;justify-content:center;
-  font-family:'Bebas Neue',sans-serif;box-shadow:0 1px 4px rgba(0,0,0,.4);
+  font-size:clamp(1rem,3.5vw,1.6rem);transition:transform .15s;z-index:2;
 }
-.game-footer{margin-top:12px;display:flex;gap:10px;align-items:center}
-#status-msg{font-size:.85rem;color:#a08860;font-style:italic}
-#winner-text{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:var(--gold);text-align:center;margin-bottom:8px}
-#go-msg{text-align:center;color:#a08860;font-style:italic;margin-bottom:20px}
+.piece:hover{transform:scale(1.08)}
+.cap-p1{
+  background:radial-gradient(circle at 35% 35%,#e74c3c,#8e1a0e);
+  box-shadow:0 3px 8px rgba(0,0,0,.5),inset 0 1px 2px rgba(255,255,255,.25);
+  border:2px solid #a01000;
+}
+.cap-p2{
+  background:radial-gradient(circle at 35% 35%,#444,#111);
+  box-shadow:0 3px 8px rgba(0,0,0,.5),inset 0 1px 2px rgba(255,255,255,.15);
+  border:2px solid #333;
+}
+.bottle{
+  background:radial-gradient(circle at 35% 35%,#a0d8ef,#4a90a8);
+  box-shadow:0 3px 8px rgba(0,0,0,.4),inset 0 1px 2px rgba(255,255,255,.3);
+  border:2px solid #5aafc0;
+  font-size:clamp(.9rem,3vw,1.4rem);
+}
+.bottle-p1{border-color:#e74c3c;box-shadow:0 3px 8px rgba(0,0,0,.4),0 0 6px rgba(231,76,60,.3)}
+.bottle-p2{border-color:#555;box-shadow:0 3px 8px rgba(0,0,0,.4),0 0 6px rgba(80,80,80,.3)}
+
+.adj-badge{
+  position:absolute;top:-4px;right:-4px;width:20px;height:20px;border-radius:50%;
+  background:var(--gold);color:var(--dark);font-size:.7rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;z-index:3;
+  box-shadow:0 1px 4px rgba(0,0,0,.4);
+}
+
+#btn-bar{margin-top:14px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+#btn-bar .btn{font-size:1rem;padding:8px 20px}
+
+/* Game Over */
+#s-gameover{display:none;text-align:center}
+#winner-text{font-family:'Bebas Neue',sans-serif;font-size:2.4rem;color:var(--gold);margin:12px 0}
+#go-msg{font-size:1.1rem;margin-bottom:16px;color:#ccc}
+
+/* Rules */
+.rules-content{text-align:left;line-height:1.6;font-size:.95rem}
+.rules-content h3{color:var(--gold);font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.05em;margin:16px 0 6px}
+.rules-content h3:first-child{margin-top:0}
+.rules-content ol,.rules-content ul{margin-left:20px;margin-bottom:10px}
+.rules-content li{margin-bottom:4px}
+.rules-content .highlight{color:var(--gold);font-weight:600}
+.rules-content .red{color:#e74c3c}
+.rules-content .win-box{
+  margin:12px 0;padding:12px;border-radius:8px;
+  background:rgba(39,174,96,.12);border:1px solid rgba(39,174,96,.35);
+}
+.rules-content .lose-box{
+  margin:12px 0;padding:12px;border-radius:8px;
+  background:rgba(192,57,43,.12);border:1px solid rgba(192,57,43,.35);
+}
 </style>
 </head>
 <body>
+
 <header>
-  <h1>TOP CAP</h1>
+  <h1>⬤ Top Cap ⬤</h1>
   <p>Le jeu de capsules stratégique</p>
 </header>
 
 <!-- LOBBY -->
 <div class="screen" id="s-lobby">
   <div class="tabs">
-    <button class="tab-btn active" id="tbtn-create" onclick="showTab('create')">Créer</button>
-    <button class="tab-btn" id="tbtn-join"   onclick="showTab('join')">Rejoindre</button>
-    <button class="tab-btn" id="tbtn-rules"  onclick="showTab('rules')">Règles</button>
+    <button class="tab-btn active" onclick="showTab('create')">Créer</button>
+    <button class="tab-btn" onclick="showTab('join')">Rejoindre</button>
+    <button class="tab-btn" onclick="showTab('rules')">Règles</button>
   </div>
 
-  <!-- Créer -->
+  <!-- Create -->
   <div class="tab-content active" id="tab-create">
-    <div class="input-group">
-      <label>TON PSEUDO</label>
-      <input id="c-name" placeholder="Ex: Alice" maxlength="16">
-    </div>
-    <div class="input-group">
-      <label>TAILLE DU PLATEAU</label>
-      <select id="c-size">
-        <option value="5" selected>5 × 5</option>
-        <option value="6">6 × 6</option>
-        <option value="7">7 × 7</option>
-      </select>
-    </div>
-    <button class="btn" onclick="createGame()">Créer la partie</button>
+    <label>Ton pseudo</label>
+    <input type="text" id="c-name" placeholder="Ex: Joueur1" maxlength="16">
+    <button class="btn" id="c-btn" onclick="createGame()">Créer la partie</button>
     <div class="err" id="c-err"></div>
+    <div class="info-box" id="c-waiting">
+      Code de la partie : <code id="c-code"></code><br>
+      <small>Partage ce code à ton adversaire. En attente…</small>
+    </div>
   </div>
 
-  <!-- Rejoindre -->
+  <!-- Join -->
   <div class="tab-content" id="tab-join">
-    <div class="input-group">
-      <label>TON PSEUDO</label>
-      <input id="j-name" placeholder="Ex: Bob" maxlength="16">
-    </div>
-    <div class="input-group">
-      <label>CODE DE LA PARTIE</label>
-      <input id="j-code" placeholder="XXXX" maxlength="4"
-        style="text-transform:uppercase;letter-spacing:.2em;font-size:1.3rem;text-align:center">
-    </div>
-    <button class="btn" onclick="joinGame()">Rejoindre</button>
+    <label>Ton pseudo</label>
+    <input type="text" id="j-name" placeholder="Ex: Joueur2" maxlength="16">
+    <label>Code de la partie</label>
+    <input type="text" id="j-code" placeholder="Colle le code ici">
+    <button class="btn" id="j-btn" onclick="joinGame()">Rejoindre</button>
     <div class="err" id="j-err"></div>
+    <div class="info-box" id="j-status">Connexion en cours…</div>
   </div>
 
-  <!-- Règles -->
+  <!-- Rules -->
   <div class="tab-content" id="tab-rules">
-    <ul class="rules-list">
-      <li>Chaque joueur a 4 capsules et une bouteille placée dans son coin.</li>
-      <li>Le nombre de capsules adjacentes (8 directions) détermine le nombre de cases que tu peux parcourir.</li>
-      <li>Tu te déplaces en ligne droite (horizontal, vertical ou diagonal).</li>
-      <li>Tu ne peux pas traverser ni t'arrêter sur une capsule.</li>
-      <li>Tu ne peux pas t'arrêter sur ta propre bouteille.</li>
-      <li>Pour gagner : recouvre la bouteille adverse avec une de tes capsules.</li>
-      <li>Si tu ne peux plus bouger, tu perds.</li>
-    </ul>
-  </div>
-</div>
+    <div class="rules-content">
+      <h3>🎯 Objectif</h3>
+      <div class="win-box">
+        <strong>Victoire :</strong> Recouvrir la <span class="highlight">bouteille adverse</span> avec l'une de tes capsules.
+      </div>
+      <div class="lose-box">
+        <strong>Défaite :</strong> Si tu ne peux déplacer <span class="red">aucune</span> de tes capsules au début de ton tour, tu perds immédiatement.
+      </div>
 
-<!-- WAITING -->
-<div class="screen" id="s-wait" style="display:none">
-  <div style="text-align:center">
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--gold);margin-bottom:16px">
-      EN ATTENTE D'UN ADVERSAIRE
+      <h3>📋 Mise en place</h3>
+      <p>Plateau 6×6. Chaque joueur possède <span class="highlight">4 capsules</span> et <span class="highlight">1 bouteille</span>.</p>
+      <ul>
+        <li>🔴 <strong>Joueur Rouge</strong> : capsules sur la ligne 5 (colonnes 1-4), bouteille en (5, 0).</li>
+        <li>⚫ <strong>Joueur Noir</strong> : capsules sur la ligne 0 (colonnes 1-4), bouteille en (0, 5).</li>
+      </ul>
+
+      <h3>🔄 Déroulement du tour</h3>
+      <ol>
+        <li><strong>Choisis</strong> une de tes capsules.</li>
+        <li><strong>Compte</strong> le nombre de capsules adjacentes (orthogonalement et diagonalement), <span class="highlight">peu importe leur couleur</span>. C'est ton nombre de déplacement.</li>
+        <li><strong>Déplace</strong> ta capsule en <span class="highlight">ligne droite</span> dans l'une des <span class="highlight">8 directions</span>, du <span class="highlight">nombre exact de cases</span> correspondant au compte de l'étape 2.</li>
+        <li>Une fois la capsule déplacée, c'est au tour de l'autre joueur.</li>
+      </ol>
+
+      <h3>🚫 Restrictions de déplacement</h3>
+      <p>Ta capsule <strong>ne peut ni s'arrêter ni passer</strong> sur :</p>
+      <ul>
+        <li>Une <strong>autre capsule</strong>, peu importe sa couleur</li>
+        <li>La bouteille de <strong>sa propre couleur</strong></li>
+      </ul>
+      <p>Ta capsule <strong>ne peut pas passer</strong> sur la bouteille adverse, mais elle peut <strong>s'arrêter dessus</strong> (= victoire !).</p>
+      <p>Si le nombre d'adjacents est <strong>0</strong>, la capsule ne peut pas bouger.</p>
+
+      <h3>💡 Astuce</h3>
+      <p>Le badge doré sur chaque capsule indique son nombre de déplacement actuel. Planifie tes coups pour contrôler les adjacences !</p>
     </div>
-    <div style="font-size:.9rem;color:#a08860;margin-bottom:10px">Partage ce code :</div>
-    <div id="room-code"
-      style="font-family:'Bebas Neue',sans-serif;font-size:3rem;letter-spacing:.3em;
-             color:var(--cream);background:rgba(212,160,23,.1);border:1px solid rgba(212,160,23,.3);
-             border-radius:8px;padding:12px 24px;display:inline-block;margin-bottom:16px">
-    </div>
-    <br>
-    <span class="status-badge badge-wait" id="wait-status">En attente…</span>
   </div>
 </div>
 
 <!-- GAME -->
 <div id="game-area">
-  <div class="game-header">
-    <div class="player-tag p1" id="tag-p1">—</div>
-    <div id="turn-indicator">…</div>
-    <div class="player-tag p2" id="tag-p2">—</div>
-  </div>
-  <div><div id="board"></div></div>
-  <div class="game-footer">
-    <button class="btn btn-sm btn-danger" onclick="abandon()">Abandonner</button>
-    <span id="status-msg"></span>
+  <div id="turn-bar"></div>
+  <div id="board-wrap"><div id="board"></div></div>
+  <div id="btn-bar">
+    <button class="btn" onclick="abandon()">🏳 Abandonner</button>
   </div>
 </div>
 
-<!-- GAMEOVER -->
-<div class="screen" id="s-gameover" style="display:none;text-align:center">
+<!-- GAME OVER -->
+<div class="screen" id="s-gameover">
   <div id="winner-text"></div>
   <div id="go-msg"></div>
   <button class="btn" onclick="backLobby()">Retour au lobby</button>
 </div>
 
 <script>
-let peer=null, conn=null;
-let myRole=null, myName='', oppName='';
-let gs=null, sel=null;
+const SZ=6;
+let peer,conn,gs,sel,myRole;
+let myName='',opName='';
 
-// ── Tabs ──────────────────────────────────────────────────────────────────────
-function showTab(t) {
-  ['create','join','rules'].forEach(id => {
-    document.getElementById('tab-'+id).classList.toggle('active', id===t);
-    document.getElementById('tbtn-'+id).classList.toggle('active', id===t);
+/* TABS */
+function showTab(id){
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>{
+    const tabs=['create','join','rules'];
+    const active=tabs[i]===id;
+    b.classList.toggle('active',active);
   });
+  document.querySelectorAll('.tab-content').forEach(tc=>tc.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
 }
 
-// ── Code aléatoire ────────────────────────────────────────────────────────────
-function randCode() {
-  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ';
-  let s='';
-  for(let i=0;i<4;i++) s+=chars[Math.floor(Math.random()*chars.length)];
-  return s;
-}
-
-// ── Créer une partie ──────────────────────────────────────────────────────────
-function createGame() {
-  const errEl=document.getElementById('c-err');
-  errEl.textContent='';
-  myName=document.getElementById('c-name').value.trim()||'Joueur 1';
-  const sz=parseInt(document.getElementById('c-size').value);
-  myRole='p1';
-  const code=randCode();
-  if(peer){peer.destroy();peer=null;}
-  peer=new Peer('TC-'+code);
-  peer.on('error',e=>{
-    errEl.textContent='Erreur : '+e.message;
-    document.getElementById('s-wait').style.display='none';
-    document.getElementById('s-lobby').style.display='block';
-  });
-  peer.on('open',()=>{
-    document.getElementById('s-lobby').style.display='none';
-    document.getElementById('s-wait').style.display='block';
-    document.getElementById('room-code').textContent=code;
-    document.getElementById('wait-status').textContent='En attente d\'un joueur…';
-    document.getElementById('wait-status').className='status-badge badge-wait';
-  });
-  peer.on('connection',c=>{
-    conn=c; setupConn();
-    conn.on('open',()=>{
-      conn.send({t:'init',name:myName,sz});
-      document.getElementById('wait-status').textContent='Adversaire connecté !';
-      document.getElementById('wait-status').className='status-badge badge-ok';
-    });
-  });
-}
-
-// ── Rejoindre une partie ──────────────────────────────────────────────────────
-function joinGame() {
-  const errEl=document.getElementById('j-err');
-  errEl.textContent='';
-  myName=document.getElementById('j-name').value.trim()||'Joueur 2';
-  const code=document.getElementById('j-code').value.trim().toUpperCase();
-  if(code.length!==4){errEl.textContent='Entre un code à 4 lettres.';return;}
-  myRole='p2';
-  errEl.textContent='⏳ Connexion…';
-  if(peer){peer.destroy();peer=null;}
+/* PEER */
+function makePeer(cb){
   peer=new Peer();
-  peer.on('error',e=>{errEl.textContent='Erreur : '+e.message;});
-  peer.on('open',()=>{
-    conn=peer.connect('TC-'+code,{reliable:true});
-    setupConn();
+  peer.on('open',()=>cb());
+  peer.on('error',e=>console.error('Peer error',e));
+}
+
+function send(obj){if(conn&&conn.open)conn.send(obj);}
+
+/* CREATE */
+function createGame(){
+  const name=document.getElementById('c-name').value.trim();
+  if(!name){document.getElementById('c-err').textContent='Entre un pseudo';return;}
+  myName=name;
+  document.getElementById('c-btn').disabled=true;
+  makePeer(()=>{
+    const code=peer.id;
+    document.getElementById('c-code').textContent=code;
+    document.getElementById('c-waiting').style.display='block';
+    peer.on('connection',c=>{
+      conn=c;
+      conn.on('data',onData);
+      conn.on('open',()=>{
+        myRole='p1';
+        send({t:'hello',name:myName});
+      });
+    });
+  });
+}
+
+/* JOIN */
+function joinGame(){
+  const name=document.getElementById('j-name').value.trim();
+  const code=document.getElementById('j-code').value.trim();
+  if(!name){document.getElementById('j-err').textContent='Entre un pseudo';return;}
+  if(!code){document.getElementById('j-err').textContent='Entre le code';return;}
+  myName=name;
+  document.getElementById('j-btn').disabled=true;
+  document.getElementById('j-status').style.display='block';
+  makePeer(()=>{
+    conn=peer.connect(code,{reliable:true});
     conn.on('open',()=>{
-      errEl.textContent='';
-      conn.send({t:'join',name:myName});
+      myRole='p2';
+      send({t:'hello',name:myName});
+    });
+    conn.on('data',onData);
+    conn.on('error',()=>{
+      document.getElementById('j-err').textContent='Connexion échouée';
+      document.getElementById('j-btn').disabled=false;
+      document.getElementById('j-status').style.display='none';
     });
   });
 }
 
-// ── Connexion ─────────────────────────────────────────────────────────────────
-function setupConn() {
-  conn.on('data',onData);
-  conn.on('close',()=>{
-    if(gs&&!gs.over) endGame(myRole==='p1'?'p2':'p1','Adversaire déconnecté.');
-  });
+/* DATA */
+function onData(d){
+  if(d.t==='hello'){
+    opName=d.name;
+    if(myRole==='p1'){
+      send({t:'hello',name:myName});
+      gs=initBoard();
+      send({t:'start',board:gs.board,turn:gs.turn});
+      startGame();
+    }
+  }
+  if(d.t==='start'){
+    gs={board:d.board,turn:d.turn,over:false,winner:null};
+    startGame();
+  }
+  if(d.t==='move'){
+    applyMove(d.fr,d.fc,d.tr,d.tc);
+  }
+  if(d.t==='abandon'){
+    endGame(myRole, opName+' a abandonné.');
+  }
+  if(d.t==='blocked'){
+    endGame(myRole, opName+' est bloqué !');
+  }
 }
 
-function send(msg){if(conn&&conn.open)conn.send(msg);}
-
-// ── Messages reçus ────────────────────────────────────────────────────────────
-function onData(msg) {
-  if(msg.t==='init'){
-    oppName=msg.name;
-    gs=initGame(msg.sz);
-    gs.names={p1:oppName,p2:myName};
-    startGameUI();
-    send({t:'ready',name:myName});
-  }
-  if(msg.t==='ready'){
-    oppName=msg.name;
-    if(!gs) gs=initGame(parseInt(document.getElementById('c-size').value));
-    gs.names={p1:myName,p2:oppName};
-    startGameUI();
-  }
-  if(msg.t==='move') applyMove(msg.from,msg.to,false);
-  if(msg.t==='abandon') endGame(myRole,'L\'adversaire a abandonné !');
+/* INIT BOARD */
+function initBoard(){
+  const b=Array.from({length:SZ},()=>Array(SZ).fill(null));
+  // P2 (noir) : bouteille (0,5), capsules (0,1)-(0,4)
+  b[0][5]={t:'bottle',p:'p2'};
+  for(let c=1;c<=4;c++) b[0][c]={t:'cap',p:'p2'};
+  // P1 (rouge) : bouteille (5,0), capsules (5,1)-(5,4)
+  b[5][0]={t:'bottle',p:'p1'};
+  for(let c=1;c<=4;c++) b[5][c]={t:'cap',p:'p1'};
+  return {board:b,turn:'p1',over:false,winner:null};
 }
 
-// ── Init plateau ──────────────────────────────────────────────────────────────
-function initGame(sz) {
-  const b=[];
-  for(let r=0;r<sz;r++){b.push([]);for(let c=0;c<sz;c++)b[r].push(null);}
-  if(sz===5){
-    b[0][0]={t:'bottle',p:'p1'};
-    b[4][4]={t:'bottle',p:'p2'};
-    b[1][1]={t:'cap',p:'p1'};
-    b[1][2]={t:'cap',p:'p1'};
-    b[1][3]={t:'cap',p:'p1'};
-    b[1][4]={t:'cap',p:'p1'};
-    b[3][0]={t:'cap',p:'p2'};
-    b[3][1]={t:'cap',p:'p2'};
-    b[3][2]={t:'cap',p:'p2'};
-    b[3][3]={t:'cap',p:'p2'};
-  } else {
-    const last=sz-1;
-    b[0][0]={t:'bottle',p:'p1'};
-    b[last][last]={t:'bottle',p:'p2'};
-    for(let c=1;c<sz;c++)      b[1][c]={t:'cap',p:'p1'};
-    for(let c=0;c<sz-1;c++)   b[last-1][c]={t:'cap',p:'p2'};
-  }
-  return{b,sz,turn:'p1',over:false,winner:null,names:{p1:'',p2:''}};
-}
-
-// ── UI jeu ────────────────────────────────────────────────────────────────────
-function startGameUI() {
+/* START GAME */
+function startGame(){
   document.getElementById('s-lobby').style.display='none';
-  document.getElementById('s-wait').style.display='none';
-  document.getElementById('game-area').style.display='flex';
-  document.getElementById('tag-p1').textContent='⚪ '+gs.names.p1;
-  document.getElementById('tag-p2').textContent='⚫ '+gs.names.p2;
-  renderBoard(); updateUI();
+  document.getElementById('game-area').style.display='block';
+  sel=null;
+  render();
+  checkBlocked();
 }
 
-function isMyTurn(){return gs&&gs.turn===myRole;}
-
-function updateUI() {
-  if(!gs)return;
-  document.getElementById('tag-p1').classList.toggle('active-tag',gs.turn==='p1');
-  document.getElementById('tag-p2').classList.toggle('active-tag',gs.turn==='p2');
-  document.getElementById('turn-indicator').textContent=
-    gs.over?'Partie terminée':isMyTurn()?'C\'est ton tour !':'Tour de '+gs.names[gs.turn];
-  document.getElementById('status-msg').textContent=
-    sel?'Capsule sélectionnée — clique la destination':isMyTurn()?'Sélectionne une capsule':'';
-  if(!gs.over&&isMyTurn()){
-    const caps=findCaps(gs.b,myRole,gs.sz);
-    const anyMove=caps.some(([r,c])=>validMoves(gs.b,r,c,myRole,gs.sz).length>0);
-    if(!anyMove){
-      const opp=myRole==='p1'?'p2':'p1';
-      endGame(opp,gs.names[myRole]+' ne peut plus bouger !');
-    }
-  }
-}
-
-// ── Rendu ─────────────────────────────────────────────────────────────────────
-function renderBoard() {
-  const board=document.getElementById('board');
-  const sz=gs.sz;
-  board.style.gridTemplateColumns=`repeat(${sz},72px)`;
-  board.innerHTML='';
-  let validSet=new Set(),winSet=new Set();
-  if(sel){
-    validMoves(gs.b,sel[0],sel[1],gs.turn,sz).forEach(([r,c])=>{
-      const cell=gs.b[r][c];
-      if(cell&&cell.t==='bottle'&&cell.p!==gs.turn) winSet.add(r+','+c);
-      else validSet.add(r+','+c);
-    });
-  }
-  for(let r=0;r<sz;r++){
-    for(let c=0;c<sz;c++){
-      const div=document.createElement('div');
-      div.className='cell '+((r+c)%2===0?'light':'dark');
-      const key=r+','+c;
-      if(sel&&sel[0]===r&&sel[1]===c) div.classList.add('selected-cell');
-      else if(winSet.has(key))        div.classList.add('highlighted-win');
-      else if(validSet.has(key))      div.classList.add('highlighted');
-      div.addEventListener('click',()=>onCellClick(r,c));
-      const piece=gs.b[r][c];
-      if(piece){
-        const pd=document.createElement('div');
-        pd.className='piece';
-        if(piece.t==='cap'){
-          pd.classList.add(piece.p==='p1'?'cap-p1':'cap-p2');
-          pd.textContent=piece.p==='p1'?'⚪':'⚫';
-          if(sel&&sel[0]===r&&sel[1]===c) pd.classList.add('selected-piece');
-          if(piece.p===myRole){
-            const adj=adjCount(gs.b,r,c,sz);
-            if(adj>0){
-              const badge=document.createElement('div');
-              badge.className='adj-count';
-              badge.textContent=adj;
-              pd.appendChild(badge);
-            }
-            pd.addEventListener('click',e=>{e.stopPropagation();onCapClick(r,c);});
-          }
-        } else {
-          pd.classList.add(piece.p==='p1'?'bottle-p1':'bottle-p2');
-          pd.textContent='🍾';
-        }
-        div.appendChild(pd);
-      }
-      board.appendChild(div);
-    }
-  }
-}
-
-// ── Logique ───────────────────────────────────────────────────────────────────
-function adjCount(b,r,c,sz){
+/* ADJACENT COUNT */
+function adjCount(b,r,c){
   let n=0;
-  for(let dr=-1;dr<=1;dr++)
-    for(let dc=-1;dc<=1;dc++){
-      if(dr===0&&dc===0)continue;
-      const nr=r+dr,nc=c+dc;
-      if(nr>=0&&nr<sz&&nc>=0&&nc<sz&&b[nr][nc]&&b[nr][nc].t==='cap')n++;
-    }
+  for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){
+    if(!dr&&!dc)continue;
+    const nr=r+dr,nc=c+dc;
+    if(nr>=0&&nr<SZ&&nc>=0&&nc<SZ&&b[nr][nc]&&b[nr][nc].t==='cap')n++;
+  }
   return n;
 }
 
-function validMoves(b,r,c,player,sz){
-  const steps=adjCount(b,r,c,sz);
-  if(steps===0)return[];
-  const dirs=[[0,1],[0,-1],[1,0],[-1,0],[1,1],[1,-1],[-1,1],[-1,-1]];
+/* VALID MOVES */
+function validMoves(b,r,c,player){
+  const steps=adjCount(b,r,c);
+  if(steps===0)return [];
   const moves=[];
-  const opp=player==='p1'?'p2':'p1';
+  const dirs=[[-1,0],[1,0],[0,-1],[0,1],[-1,-1],[-1,1],[1,-1],[1,1]];
   for(const[dr,dc]of dirs){
-    let blocked=false;
-    for(let s=1;s<=steps;s++){
+    let valid=true;
+    for(let s=1;s<steps;s++){
       const nr=r+dr*s,nc=c+dc*s;
-      if(nr<0||nr>=sz||nc<0||nc>=sz){blocked=true;break;}
+      if(nr<0||nr>=SZ||nc<0||nc>=SZ){valid=false;break;}
       const cell=b[nr][nc];
       if(cell){
-        if(cell.t==='cap'){blocked=true;break;}
-        if(cell.t==='bottle'&&cell.p===player){blocked=true;break;}
-        if(cell.t==='bottle'&&cell.p===opp){
-          if(s===steps)moves.push([nr,nc]);
-          blocked=true;break;
-        }
+        if(cell.t==='cap'){valid=false;break;}
+        if(cell.t==='bottle'){valid=false;break;} // toute bouteille bloque le passage
       }
     }
-    if(!blocked){
-      const nr=r+dr*steps,nc=c+dc*steps;
-      if(nr>=0&&nr<sz&&nc>=0&&nc<sz&&!b[nr][nc])moves.push([nr,nc]);
+    if(!valid)continue;
+    const fr=r+dr*steps,fc=c+dc*steps;
+    if(fr<0||fr>=SZ||fc<0||fc>=SZ)continue;
+    const dest=b[fr][fc];
+    if(!dest){
+      moves.push([fr,fc]);
+    } else if(dest.t==='bottle'&&dest.p!==player){
+      moves.push([fr,fc]); // victoire
     }
+    // ne peut pas s'arrêter sur capsule ou sa propre bouteille
   }
   return moves;
 }
 
-function findCaps(b,player,sz){
-  const res=[];
-  for(let r=0;r<sz;r++)for(let c=0;c<sz;c++)
-    if(b[r][c]&&b[r][c].t==='cap'&&b[r][c].p===player)res.push([r,c]);
-  return res;
+/* CAN PLAYER MOVE */
+function canPlayerMove(b,player){
+  for(let r=0;r<SZ;r++)for(let c=0;c<SZ;c++){
+    const cell=b[r][c];
+    if(cell&&cell.t==='cap'&&cell.p===player){
+      if(validMoves(b,r,c,player).length>0)return true;
+    }
+  }
+  return false;
 }
 
-// ── Mouvement ─────────────────────────────────────────────────────────────────
-function applyMove(from,to,isMine){
-  const[fr,fc]=from,[tr,tc]=to;
-  const piece=gs.b[fr][fc];
-  if(!piece)return;
-  const target=gs.b[tr][tc];
-  const won=target&&target.t==='bottle'&&target.p!==piece.p;
-  gs.b[tr][tc]=piece;
-  gs.b[fr][fc]=null;
-  sel=null;
-  if(isMine)send({t:'move',from,to});
-  if(won){
-    renderBoard();
-    endGame(piece.p,gs.names[piece.p]+' a recouvert la bouteille de '+gs.names[piece.p==='p1'?'p2':'p1']+' !');
+/* CHECK BLOCKED */
+function checkBlocked(){
+  if(gs.over)return;
+  if(gs.turn===myRole&&!canPlayerMove(gs.board,myRole)){
+    send({t:'blocked'});
+    endGame(myRole==='p1'?'p2':'p1','Tu es bloqué, aucune capsule ne peut bouger !');
+  }
+}
+
+/* RENDER */
+function render(){
+  const board=document.getElementById('board');
+  board.innerHTML='';
+  const turnBar=document.getElementById('turn-bar');
+  if(gs.over){
+    turnBar.textContent='Partie terminée';
+  } else if(gs.turn===myRole){
+    turnBar.innerHTML='🟢 <span style="color:var(--gold)">À ton tour !</span>';
+  } else {
+    turnBar.innerHTML='⏳ Tour de '+opName;
+  }
+
+  const highlights=[];
+  if(sel){
+    const mv=validMoves(gs.board,sel[0],sel[1],myRole);
+    mv.forEach(m=>highlights.push(m[0]*SZ+m[1]));
+  }
+
+  for(let r=0;r<SZ;r++)for(let c=0;c<SZ;c++){
+    const div=document.createElement('div');
+    div.className='cell '+((r+c)%2===0?'light':'dark');
+    const idx=r*SZ+c;
+    if(sel&&sel[0]===r&&sel[1]===c)div.classList.add('sel');
+    if(highlights.includes(idx))div.classList.add('hl');
+    div.onclick=()=>onClick(r,c);
+
+    const cell=gs.board[r][c];
+    if(cell){
+      const p=document.createElement('div');
+      if(cell.t==='cap'){
+        p.className='piece cap-'+cell.p;
+        const adj=adjCount(gs.board,r,c);
+        p.textContent=cell.p==='p1'?'🔴':'⚫';
+        const badge=document.createElement('div');
+        badge.className='adj-badge';
+        badge.textContent=adj;
+        p.appendChild(badge);
+      } else {
+        p.className='piece bottle bottle-'+cell.p;
+        p.textContent='🍾';
+      }
+      div.appendChild(p);
+    }
+    board.appendChild(div);
+  }
+}
+
+/* CLICK */
+function onClick(r,c){
+  if(gs.over||gs.turn!==myRole)return;
+  const cell=gs.board[r][c];
+
+  // Si on a sélectionné et on clique sur une destination valide
+  if(sel){
+    const mv=validMoves(gs.board,sel[0],sel[1],myRole);
+    for(const m of mv){
+      if(m[0]===r&&m[1]===c){
+        send({t:'move',fr:sel[0],fc:sel[1],tr:r,tc:c});
+        applyMove(sel[0],sel[1],r,c);
+        sel=null;
+        return;
+      }
+    }
+  }
+
+  // Sélectionner une capsule
+  if(cell&&cell.t==='cap'&&cell.p===myRole){
+    sel=[r,c];
+    render();
     return;
   }
-  gs.turn=gs.turn==='p1'?'p2':'p1';
-  renderBoard(); updateUI();
+
+  sel=null;
+  render();
 }
 
-function onCapClick(r,c){
-  if(!isMyTurn()||gs.over)return;
-  sel=(sel&&sel[0]===r&&sel[1]===c)?null:[r,c];
-  renderBoard(); updateUI();
-}
+/* APPLY MOVE */
+function applyMove(fr,fc,tr,tc){
+  const piece=gs.board[fr][fc];
+  const dest=gs.board[tr][tc];
 
-function onCellClick(r,c){
-  if(!isMyTurn()||gs.over)return;
-  if(sel){
-    const vm=validMoves(gs.b,sel[0],sel[1],gs.turn,gs.sz);
-    if(vm.some(([mr,mc])=>mr===r&&mc===c)){applyMove(sel,[r,c],true);return;}
+  // Check victoire
+  if(dest&&dest.t==='bottle'){
+    gs.board[tr][tc]=piece;
+    gs.board[fr][fc]=null;
+    gs.turn=gs.turn==='p1'?'p2':'p1';
+    render();
+    const winner=piece.p;
+    const msg=((winner===myRole)?myName:opName)+' a recouvert la bouteille adverse !';
+    endGame(winner,msg);
+    return;
   }
-  const piece=gs.b[r][c];
-  if(piece&&piece.t==='cap'&&piece.p===myRole){sel=[r,c];}
-  else{sel=null;}
-  renderBoard(); updateUI();
+
+  gs.board[tr][tc]=piece;
+  gs.board[fr][fc]=null;
+  gs.turn=gs.turn==='p1'?'p2':'p1';
+  sel=null;
+  render();
+  checkBlocked();
 }
 
-// ── Fin ───────────────────────────────────────────────────────────────────────
+/* END GAME */
 function endGame(winner,msg){
-  if(!gs||gs.over)return;
-  gs.over=true; gs.winner=winner;
+  if(gs.over)return;
+  gs.over=true;
+  gs.winner=winner;
   setTimeout(()=>{
     document.getElementById('game-area').style.display='none';
     document.getElementById('s-gameover').style.display='block';
-    document.getElementById('winner-text').textContent=winner===myRole?'🏆 Victoire !':'😞 Défaite';
+    document.getElementById('winner-text').textContent=(winner===myRole)?'🏆 Victoire !':'😞 Défaite';
     document.getElementById('go-msg').textContent=msg;
   },600);
 }
 
+/* ABANDON */
 function abandon(){
   if(!confirm('Abandonner la partie ?'))return;
   send({t:'abandon'});
   endGame(myRole==='p1'?'p2':'p1','Tu as abandonné.');
 }
 
+/* BACK LOBBY */
 function backLobby(){
   document.getElementById('s-gameover').style.display='none';
   document.getElementById('s-lobby').style.display='block';
   showTab('create');
   document.getElementById('c-err').textContent='';
   document.getElementById('j-err').textContent='';
+  document.getElementById('c-waiting').style.display='none';
+  document.getElementById('j-status').style.display='none';
+  document.getElementById('c-btn').disabled=false;
+  document.getElementById('j-btn').disabled=false;
   if(peer){peer.destroy();peer=null;}
-  conn=null; gs=null; sel=null; myRole=null;
+  conn=null;gs=null;sel=null;myRole=null;
 }
 </script>
 </body>
