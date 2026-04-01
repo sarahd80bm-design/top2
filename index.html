@@ -30,13 +30,15 @@ header p{font-style:italic;color:#a08860;font-size:.9rem;margin-top:2px}
   background:rgba(255,255,255,.04);border:1px solid rgba(212,160,23,.25);
   border-radius:12px;padding:24px;margin:12px auto;max-width:480px;width:92%;
 }
-.tabs{display:flex;gap:6px;margin-bottom:16px;justify-content:center}
+.tabs{display:flex;gap:6px;margin-bottom:20px;justify-content:center}
 .tab-btn{
   background:transparent;border:1px solid rgba(212,160,23,.3);border-radius:6px;
   padding:7px 18px;color:#a08860;font-family:'Bebas Neue',sans-serif;
   font-size:.95rem;cursor:pointer;transition:all .2s;
 }
 .tab-btn.active,.tab-btn:hover{background:rgba(212,160,23,.15);color:var(--gold);border-color:var(--gold)}
+.tab-content{display:none}
+.tab-content.active{display:block}
 .input-group{margin-bottom:14px}
 .input-group label{display:block;font-size:.82rem;color:#a08860;margin-bottom:4px;letter-spacing:.05em}
 .input-group input,.input-group select{
@@ -55,13 +57,20 @@ header p{font-style:italic;color:#a08860;font-size:.9rem;margin-top:2px}
 .btn:hover{filter:brightness(1.15);transform:translateY(-1px)}
 .btn-sm{padding:6px 16px;font-size:.85rem;width:auto;margin-top:0}
 .btn-danger{background:linear-gradient(135deg,#c0392b,#922b21);color:#fff}
+.err{color:#e74c3c;font-size:.82rem;margin-top:6px;min-height:18px}
+.rules-list{list-style:none;padding:0}
+.rules-list li{
+  padding:8px 0;border-bottom:1px solid rgba(212,160,23,.1);
+  font-size:.95rem;color:#d0c8b0;line-height:1.5;
+}
+.rules-list li:last-child{border-bottom:none}
+.rules-list li::before{content:'▶ ';color:var(--gold);font-size:.7rem}
 .status-badge{
   display:inline-block;padding:4px 12px;border-radius:20px;font-size:.78rem;
   letter-spacing:.06em;font-family:'Bebas Neue',sans-serif;
 }
 .badge-wait{background:rgba(212,160,23,.2);color:var(--gold);border:1px solid rgba(212,160,23,.4)}
 .badge-ok{background:rgba(39,174,96,.2);color:#2ecc71;border:1px solid rgba(39,174,96,.4)}
-.err{color:#e74c3c;font-size:.82rem;margin-top:6px;min-height:18px}
 
 #game-area{display:none;flex-direction:column;align-items:center;width:100%;padding:12px 0 24px}
 .game-header{
@@ -92,7 +101,6 @@ header p{font-style:italic;color:#a08860;font-size:.9rem;margin-top:2px}
 .cell.highlighted{background:rgba(39,174,96,.45)!important;box-shadow:inset 0 0 8px rgba(39,174,96,.6)}
 .cell.highlighted-win{background:rgba(192,57,43,.55)!important;box-shadow:inset 0 0 8px rgba(192,57,43,.7)}
 .cell.selected-cell{background:rgba(212,160,23,.45)!important;box-shadow:inset 0 0 10px rgba(212,160,23,.7)}
-
 .piece{
   width:58px;height:58px;border-radius:50%;display:flex;align-items:center;
   justify-content:center;font-size:1.6rem;position:relative;
@@ -143,11 +151,13 @@ header p{font-style:italic;color:#a08860;font-size:.9rem;margin-top:2px}
 <!-- LOBBY -->
 <div class="screen" id="s-lobby">
   <div class="tabs">
-    <button class="tab-btn active" id="tab-btn-create" onclick="showTab('create')">Créer</button>
-    <button class="tab-btn" id="tab-btn-join" onclick="showTab('join')">Rejoindre</button>
+    <button class="tab-btn active" id="tbtn-create" onclick="showTab('create')">Créer</button>
+    <button class="tab-btn" id="tbtn-join"   onclick="showTab('join')">Rejoindre</button>
+    <button class="tab-btn" id="tbtn-rules"  onclick="showTab('rules')">Règles</button>
   </div>
+
   <!-- Créer -->
-  <div id="tab-create">
+  <div class="tab-content active" id="tab-create">
     <div class="input-group">
       <label>TON PSEUDO</label>
       <input id="c-name" placeholder="Ex: Alice" maxlength="16">
@@ -163,8 +173,9 @@ header p{font-style:italic;color:#a08860;font-size:.9rem;margin-top:2px}
     <button class="btn" onclick="createGame()">Créer la partie</button>
     <div class="err" id="c-err"></div>
   </div>
+
   <!-- Rejoindre -->
-  <div id="tab-join" style="display:none">
+  <div class="tab-content" id="tab-join">
     <div class="input-group">
       <label>TON PSEUDO</label>
       <input id="j-name" placeholder="Ex: Bob" maxlength="16">
@@ -176,6 +187,19 @@ header p{font-style:italic;color:#a08860;font-size:.9rem;margin-top:2px}
     </div>
     <button class="btn" onclick="joinGame()">Rejoindre</button>
     <div class="err" id="j-err"></div>
+  </div>
+
+  <!-- Règles -->
+  <div class="tab-content" id="tab-rules">
+    <ul class="rules-list">
+      <li>Chaque joueur a 4 capsules et une bouteille placée dans son coin.</li>
+      <li>Le nombre de capsules adjacentes (8 directions) détermine le nombre de cases que tu peux parcourir.</li>
+      <li>Tu te déplaces en ligne droite (horizontal, vertical ou diagonal).</li>
+      <li>Tu ne peux pas traverser ni t'arrêter sur une capsule.</li>
+      <li>Tu ne peux pas t'arrêter sur ta propre bouteille.</li>
+      <li>Pour gagner : recouvre la bouteille adverse avec une de tes capsules.</li>
+      <li>Si tu ne peux plus bouger, tu perds.</li>
+    </ul>
   </div>
 </div>
 
@@ -218,254 +242,208 @@ header p{font-style:italic;color:#a08860;font-size:.9rem;margin-top:2px}
 </div>
 
 <script>
-// ── État global ───────────────────────────────────────────────────────────────
-let peer = null, conn = null;
-let myRole = null, myName = '', oppName = '';
-let gs = null, sel = null;
+let peer=null, conn=null;
+let myRole=null, myName='', oppName='';
+let gs=null, sel=null;
 
 // ── Tabs ──────────────────────────────────────────────────────────────────────
 function showTab(t) {
-  document.getElementById('tab-create').style.display = t === 'create' ? 'block' : 'none';
-  document.getElementById('tab-join').style.display   = t === 'join'   ? 'block' : 'none';
-  document.getElementById('tab-btn-create').classList.toggle('active', t === 'create');
-  document.getElementById('tab-btn-join').classList.toggle('active',   t === 'join');
+  ['create','join','rules'].forEach(id => {
+    document.getElementById('tab-'+id).classList.toggle('active', id===t);
+    document.getElementById('tbtn-'+id).classList.toggle('active', id===t);
+  });
 }
 
-// ── Code aléatoire 4 lettres ──────────────────────────────────────────────────
+// ── Code aléatoire ────────────────────────────────────────────────────────────
 function randCode() {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
-  let s = '';
-  for (let i = 0; i < 4; i++) s += chars[Math.floor(Math.random() * chars.length)];
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ';
+  let s='';
+  for(let i=0;i<4;i++) s+=chars[Math.floor(Math.random()*chars.length)];
   return s;
 }
 
 // ── Créer une partie ──────────────────────────────────────────────────────────
 function createGame() {
-  const errEl = document.getElementById('c-err');
-  errEl.textContent = '';
-  myName = document.getElementById('c-name').value.trim() || 'Joueur 1';
-  const sz = parseInt(document.getElementById('c-size').value);
-  myRole = 'p1';
-  const code = randCode();
-
-  if (peer) { peer.destroy(); peer = null; }
-
-  try {
-    peer = new Peer('TC-' + code);
-  } catch(e) {
-    errEl.textContent = 'Erreur PeerJS : ' + e.message;
-    return;
-  }
-
-  peer.on('error', e => {
-    errEl.textContent = 'Erreur : ' + e.message;
-    document.getElementById('s-wait').style.display = 'none';
-    document.getElementById('s-lobby').style.display = 'block';
+  const errEl=document.getElementById('c-err');
+  errEl.textContent='';
+  myName=document.getElementById('c-name').value.trim()||'Joueur 1';
+  const sz=parseInt(document.getElementById('c-size').value);
+  myRole='p1';
+  const code=randCode();
+  if(peer){peer.destroy();peer=null;}
+  peer=new Peer('TC-'+code);
+  peer.on('error',e=>{
+    errEl.textContent='Erreur : '+e.message;
+    document.getElementById('s-wait').style.display='none';
+    document.getElementById('s-lobby').style.display='block';
   });
-
-  peer.on('open', () => {
-    document.getElementById('s-lobby').style.display = 'none';
-    document.getElementById('s-wait').style.display  = 'block';
-    document.getElementById('room-code').textContent = code;
-    document.getElementById('wait-status').textContent  = 'En attente d\'un joueur…';
-    document.getElementById('wait-status').className    = 'status-badge badge-wait';
+  peer.on('open',()=>{
+    document.getElementById('s-lobby').style.display='none';
+    document.getElementById('s-wait').style.display='block';
+    document.getElementById('room-code').textContent=code;
+    document.getElementById('wait-status').textContent='En attente d\'un joueur…';
+    document.getElementById('wait-status').className='status-badge badge-wait';
   });
-
-  peer.on('connection', c => {
-    conn = c;
-    setupConn();
-    conn.on('open', () => {
-      // L'hôte envoie ses infos + taille du plateau
-      conn.send({ t: 'init', name: myName, sz });
-      document.getElementById('wait-status').textContent = 'Adversaire connecté !';
-      document.getElementById('wait-status').className   = 'status-badge badge-ok';
+  peer.on('connection',c=>{
+    conn=c; setupConn();
+    conn.on('open',()=>{
+      conn.send({t:'init',name:myName,sz});
+      document.getElementById('wait-status').textContent='Adversaire connecté !';
+      document.getElementById('wait-status').className='status-badge badge-ok';
     });
   });
 }
 
 // ── Rejoindre une partie ──────────────────────────────────────────────────────
 function joinGame() {
-  const errEl = document.getElementById('j-err');
-  errEl.textContent = '';
-  myName = document.getElementById('j-name').value.trim() || 'Joueur 2';
-  const code = document.getElementById('j-code').value.trim().toUpperCase();
-  if (code.length !== 4) { errEl.textContent = 'Entre un code à 4 lettres.'; return; }
-  myRole = 'p2';
-  errEl.textContent = '⏳ Connexion…';
-
-  if (peer) { peer.destroy(); peer = null; }
-
-  try {
-    peer = new Peer();
-  } catch(e) {
-    errEl.textContent = 'Erreur PeerJS : ' + e.message;
-    return;
-  }
-
-  peer.on('error', e => { errEl.textContent = 'Erreur : ' + e.message; });
-
-  peer.on('open', () => {
-    conn = peer.connect('TC-' + code, { reliable: true });
+  const errEl=document.getElementById('j-err');
+  errEl.textContent='';
+  myName=document.getElementById('j-name').value.trim()||'Joueur 2';
+  const code=document.getElementById('j-code').value.trim().toUpperCase();
+  if(code.length!==4){errEl.textContent='Entre un code à 4 lettres.';return;}
+  myRole='p2';
+  errEl.textContent='⏳ Connexion…';
+  if(peer){peer.destroy();peer=null;}
+  peer=new Peer();
+  peer.on('error',e=>{errEl.textContent='Erreur : '+e.message;});
+  peer.on('open',()=>{
+    conn=peer.connect('TC-'+code,{reliable:true});
     setupConn();
-    conn.on('open', () => {
-      errEl.textContent = '';
-      conn.send({ t: 'join', name: myName });
+    conn.on('open',()=>{
+      errEl.textContent='';
+      conn.send({t:'join',name:myName});
     });
   });
 }
 
-// ── Gestion connexion ─────────────────────────────────────────────────────────
+// ── Connexion ─────────────────────────────────────────────────────────────────
 function setupConn() {
-  conn.on('data', onData);
-  conn.on('close', () => {
-    if (gs && !gs.over) endGame(myRole === 'p1' ? 'p2' : 'p1', 'Adversaire déconnecté.');
+  conn.on('data',onData);
+  conn.on('close',()=>{
+    if(gs&&!gs.over) endGame(myRole==='p1'?'p2':'p1','Adversaire déconnecté.');
   });
-  conn.on('error', e => console.warn('conn error', e));
 }
 
-function send(msg) { if (conn && conn.open) conn.send(msg); }
+function send(msg){if(conn&&conn.open)conn.send(msg);}
 
-// ── Réception messages ────────────────────────────────────────────────────────
+// ── Messages reçus ────────────────────────────────────────────────────────────
 function onData(msg) {
-  // P2 reçoit init de P1
-  if (msg.t === 'init') {
-    oppName = msg.name;
-    gs = initGame(msg.sz);
-    gs.names = { p1: oppName, p2: myName };
+  if(msg.t==='init'){
+    oppName=msg.name;
+    gs=initGame(msg.sz);
+    gs.names={p1:oppName,p2:myName};
     startGameUI();
-    // P2 confirme
-    send({ t: 'ready', name: myName });
+    send({t:'ready',name:myName});
   }
-  // P1 reçoit ready de P2
-  if (msg.t === 'ready') {
-    oppName = msg.name;
-    if (!gs) gs = initGame(parseInt(document.getElementById('c-size').value));
-    gs.names = { p1: myName, p2: oppName };
+  if(msg.t==='ready'){
+    oppName=msg.name;
+    if(!gs) gs=initGame(parseInt(document.getElementById('c-size').value));
+    gs.names={p1:myName,p2:oppName};
     startGameUI();
   }
-  // Mouvement adverse
-  if (msg.t === 'move') {
-    applyMove(msg.from, msg.to, false);
-  }
-  // Abandon adverse
-  if (msg.t === 'abandon') {
-    endGame(myRole, 'L\'adversaire a abandonné !');
-  }
+  if(msg.t==='move') applyMove(msg.from,msg.to,false);
+  if(msg.t==='abandon') endGame(myRole,'L\'adversaire a abandonné !');
 }
 
-// ── Initialisation plateau ────────────────────────────────────────────────────
+// ── Init plateau ──────────────────────────────────────────────────────────────
 function initGame(sz) {
-  const b = [];
-  for (let r = 0; r < sz; r++) { b.push([]); for (let c = 0; c < sz; c++) b[r].push(null); }
-
-  if (sz === 5) {
-    b[0][0] = { t:'bottle', p:'p1' };
-    b[4][4] = { t:'bottle', p:'p2' };
-    b[1][1] = { t:'cap', p:'p1' };
-    b[1][2] = { t:'cap', p:'p1' };
-    b[1][3] = { t:'cap', p:'p1' };
-    b[1][4] = { t:'cap', p:'p1' };
-    b[3][0] = { t:'cap', p:'p2' };
-    b[3][1] = { t:'cap', p:'p2' };
-    b[3][2] = { t:'cap', p:'p2' };
-    b[3][3] = { t:'cap', p:'p2' };
+  const b=[];
+  for(let r=0;r<sz;r++){b.push([]);for(let c=0;c<sz;c++)b[r].push(null);}
+  if(sz===5){
+    b[0][0]={t:'bottle',p:'p1'};
+    b[4][4]={t:'bottle',p:'p2'};
+    b[1][1]={t:'cap',p:'p1'};
+    b[1][2]={t:'cap',p:'p1'};
+    b[1][3]={t:'cap',p:'p1'};
+    b[1][4]={t:'cap',p:'p1'};
+    b[3][0]={t:'cap',p:'p2'};
+    b[3][1]={t:'cap',p:'p2'};
+    b[3][2]={t:'cap',p:'p2'};
+    b[3][3]={t:'cap',p:'p2'};
   } else {
-    const last = sz - 1;
-    b[0][0]       = { t:'bottle', p:'p1' };
-    b[last][last] = { t:'bottle', p:'p2' };
-    for (let c = 1; c < sz; c++)      b[1][c]        = { t:'cap', p:'p1' };
-    for (let c = 0; c < sz - 1; c++) b[last-1][c]   = { t:'cap', p:'p2' };
+    const last=sz-1;
+    b[0][0]={t:'bottle',p:'p1'};
+    b[last][last]={t:'bottle',p:'p2'};
+    for(let c=1;c<sz;c++)      b[1][c]={t:'cap',p:'p1'};
+    for(let c=0;c<sz-1;c++)   b[last-1][c]={t:'cap',p:'p2'};
   }
-
-  return { b, sz, turn:'p1', over:false, winner:null, names:{p1:'',p2:''} };
+  return{b,sz,turn:'p1',over:false,winner:null,names:{p1:'',p2:''}};
 }
 
-// ── Démarrer l'UI de jeu ──────────────────────────────────────────────────────
+// ── UI jeu ────────────────────────────────────────────────────────────────────
 function startGameUI() {
-  document.getElementById('s-lobby').style.display   = 'none';
-  document.getElementById('s-wait').style.display    = 'none';
-  document.getElementById('game-area').style.display = 'flex';
-  document.getElementById('tag-p1').textContent = '⚪ ' + gs.names.p1;
-  document.getElementById('tag-p2').textContent = '⚫ ' + gs.names.p2;
-  renderBoard();
-  updateUI();
+  document.getElementById('s-lobby').style.display='none';
+  document.getElementById('s-wait').style.display='none';
+  document.getElementById('game-area').style.display='flex';
+  document.getElementById('tag-p1').textContent='⚪ '+gs.names.p1;
+  document.getElementById('tag-p2').textContent='⚫ '+gs.names.p2;
+  renderBoard(); updateUI();
 }
 
-// ── Vérifications ─────────────────────────────────────────────────────────────
-function isMyTurn() { return gs && gs.turn === myRole; }
+function isMyTurn(){return gs&&gs.turn===myRole;}
 
 function updateUI() {
-  if (!gs) return;
-  const myT = isMyTurn();
-  document.getElementById('tag-p1').classList.toggle('active-tag', gs.turn === 'p1');
-  document.getElementById('tag-p2').classList.toggle('active-tag', gs.turn === 'p2');
-  document.getElementById('turn-indicator').textContent =
-    gs.over ? 'Partie terminée' : myT ? 'C\'est ton tour !' : 'Tour de ' + gs.names[gs.turn];
-  document.getElementById('status-msg').textContent =
-    sel ? 'Capsule sélectionnée — choisir la destination' : myT ? 'Sélectionne une capsule' : '';
-
-  // Vérifier blocage
-  if (!gs.over && myT) {
-    const caps = findCaps(gs.b, myRole, gs.sz);
-    const anyMove = caps.some(([r,c]) => validMoves(gs.b,r,c,myRole,gs.sz).length > 0);
-    if (!anyMove) {
-      const opp = myRole === 'p1' ? 'p2' : 'p1';
-      endGame(opp, gs.names[myRole] + ' ne peut plus bouger !');
+  if(!gs)return;
+  document.getElementById('tag-p1').classList.toggle('active-tag',gs.turn==='p1');
+  document.getElementById('tag-p2').classList.toggle('active-tag',gs.turn==='p2');
+  document.getElementById('turn-indicator').textContent=
+    gs.over?'Partie terminée':isMyTurn()?'C\'est ton tour !':'Tour de '+gs.names[gs.turn];
+  document.getElementById('status-msg').textContent=
+    sel?'Capsule sélectionnée — clique la destination':isMyTurn()?'Sélectionne une capsule':'';
+  if(!gs.over&&isMyTurn()){
+    const caps=findCaps(gs.b,myRole,gs.sz);
+    const anyMove=caps.some(([r,c])=>validMoves(gs.b,r,c,myRole,gs.sz).length>0);
+    if(!anyMove){
+      const opp=myRole==='p1'?'p2':'p1';
+      endGame(opp,gs.names[myRole]+' ne peut plus bouger !');
     }
   }
 }
 
-// ── Rendu plateau ─────────────────────────────────────────────────────────────
+// ── Rendu ─────────────────────────────────────────────────────────────────────
 function renderBoard() {
-  const board = document.getElementById('board');
-  const sz = gs.sz;
-  board.style.gridTemplateColumns = `repeat(${sz},72px)`;
-  board.innerHTML = '';
-
-  let validSet = new Set(), winSet = new Set();
-  if (sel) {
-    validMoves(gs.b, sel[0], sel[1], gs.turn, sz).forEach(([r,c]) => {
-      const cell = gs.b[r][c];
-      if (cell && cell.t === 'bottle' && cell.p !== gs.turn) winSet.add(r+','+c);
+  const board=document.getElementById('board');
+  const sz=gs.sz;
+  board.style.gridTemplateColumns=`repeat(${sz},72px)`;
+  board.innerHTML='';
+  let validSet=new Set(),winSet=new Set();
+  if(sel){
+    validMoves(gs.b,sel[0],sel[1],gs.turn,sz).forEach(([r,c])=>{
+      const cell=gs.b[r][c];
+      if(cell&&cell.t==='bottle'&&cell.p!==gs.turn) winSet.add(r+','+c);
       else validSet.add(r+','+c);
     });
   }
-
-  for (let r = 0; r < sz; r++) {
-    for (let c = 0; c < sz; c++) {
-      const div = document.createElement('div');
-      div.className = 'cell ' + ((r+c)%2===0 ? 'light' : 'dark');
-      const key = r+','+c;
-
-      if (sel && sel[0]===r && sel[1]===c) div.classList.add('selected-cell');
-      else if (winSet.has(key))   div.classList.add('highlighted-win');
-      else if (validSet.has(key)) div.classList.add('highlighted');
-
-      div.addEventListener('click', () => onCellClick(r,c));
-
-      const piece = gs.b[r][c];
-      if (piece) {
-        const pd = document.createElement('div');
-        pd.className = 'piece';
-
-        if (piece.t === 'cap') {
-          pd.classList.add(piece.p === 'p1' ? 'cap-p1' : 'cap-p2');
-          pd.textContent = piece.p === 'p1' ? '⚪' : '⚫';
-          if (sel && sel[0]===r && sel[1]===c) pd.classList.add('selected-piece');
-
-          if (piece.p === myRole) {
-            const adj = adjCount(gs.b, r, c, sz);
-            if (adj > 0) {
-              const badge = document.createElement('div');
-              badge.className = 'adj-count';
-              badge.textContent = adj;
+  for(let r=0;r<sz;r++){
+    for(let c=0;c<sz;c++){
+      const div=document.createElement('div');
+      div.className='cell '+((r+c)%2===0?'light':'dark');
+      const key=r+','+c;
+      if(sel&&sel[0]===r&&sel[1]===c) div.classList.add('selected-cell');
+      else if(winSet.has(key))        div.classList.add('highlighted-win');
+      else if(validSet.has(key))      div.classList.add('highlighted');
+      div.addEventListener('click',()=>onCellClick(r,c));
+      const piece=gs.b[r][c];
+      if(piece){
+        const pd=document.createElement('div');
+        pd.className='piece';
+        if(piece.t==='cap'){
+          pd.classList.add(piece.p==='p1'?'cap-p1':'cap-p2');
+          pd.textContent=piece.p==='p1'?'⚪':'⚫';
+          if(sel&&sel[0]===r&&sel[1]===c) pd.classList.add('selected-piece');
+          if(piece.p===myRole){
+            const adj=adjCount(gs.b,r,c,sz);
+            if(adj>0){
+              const badge=document.createElement('div');
+              badge.className='adj-count';
+              badge.textContent=adj;
               pd.appendChild(badge);
             }
-            pd.addEventListener('click', e => { e.stopPropagation(); onCapClick(r,c); });
+            pd.addEventListener('click',e=>{e.stopPropagation();onCapClick(r,c);});
           }
         } else {
-          pd.classList.add(piece.p === 'p1' ? 'bottle-p1' : 'bottle-p2');
-          pd.textContent = '🍾';
+          pd.classList.add(piece.p==='p1'?'bottle-p1':'bottle-p2');
+          pd.textContent='🍾';
         }
         div.appendChild(pd);
       }
@@ -474,134 +452,117 @@ function renderBoard() {
   }
 }
 
-// ── Logique de jeu ────────────────────────────────────────────────────────────
-function adjCount(b, r, c, sz) {
-  let n = 0;
-  for (let dr = -1; dr <= 1; dr++)
-    for (let dc = -1; dc <= 1; dc++) {
-      if (dr===0 && dc===0) continue;
-      const nr=r+dr, nc=c+dc;
-      if (nr>=0&&nr<sz&&nc>=0&&nc<sz && b[nr][nc] && b[nr][nc].t==='cap') n++;
+// ── Logique ───────────────────────────────────────────────────────────────────
+function adjCount(b,r,c,sz){
+  let n=0;
+  for(let dr=-1;dr<=1;dr++)
+    for(let dc=-1;dc<=1;dc++){
+      if(dr===0&&dc===0)continue;
+      const nr=r+dr,nc=c+dc;
+      if(nr>=0&&nr<sz&&nc>=0&&nc<sz&&b[nr][nc]&&b[nr][nc].t==='cap')n++;
     }
   return n;
 }
 
-function validMoves(b, r, c, player, sz) {
-  const steps = adjCount(b, r, c, sz);
-  if (steps === 0) return [];
-  const dirs = [[0,1],[0,-1],[1,0],[-1,0],[1,1],[1,-1],[-1,1],[-1,-1]];
-  const moves = [];
-  const opp = player === 'p1' ? 'p2' : 'p1';
-
-  for (const [dr,dc] of dirs) {
-    let blocked = false;
-    for (let s = 1; s <= steps; s++) {
-      const nr=r+dr*s, nc=c+dc*s;
-      if (nr<0||nr>=sz||nc<0||nc>=sz) { blocked=true; break; }
-      const cell = b[nr][nc];
-      if (cell) {
-        if (cell.t === 'cap') { blocked=true; break; }
-        if (cell.t === 'bottle' && cell.p === player) { blocked=true; break; }
-        if (cell.t === 'bottle' && cell.p === opp) {
-          if (s === steps) moves.push([nr,nc]);
-          blocked=true; break;
+function validMoves(b,r,c,player,sz){
+  const steps=adjCount(b,r,c,sz);
+  if(steps===0)return[];
+  const dirs=[[0,1],[0,-1],[1,0],[-1,0],[1,1],[1,-1],[-1,1],[-1,-1]];
+  const moves=[];
+  const opp=player==='p1'?'p2':'p1';
+  for(const[dr,dc]of dirs){
+    let blocked=false;
+    for(let s=1;s<=steps;s++){
+      const nr=r+dr*s,nc=c+dc*s;
+      if(nr<0||nr>=sz||nc<0||nc>=sz){blocked=true;break;}
+      const cell=b[nr][nc];
+      if(cell){
+        if(cell.t==='cap'){blocked=true;break;}
+        if(cell.t==='bottle'&&cell.p===player){blocked=true;break;}
+        if(cell.t==='bottle'&&cell.p===opp){
+          if(s===steps)moves.push([nr,nc]);
+          blocked=true;break;
         }
       }
     }
-    if (!blocked) {
-      const nr=r+dr*steps, nc=c+dc*steps;
-      if (nr>=0&&nr<sz&&nc>=0&&nc<sz&&!b[nr][nc]) moves.push([nr,nc]);
+    if(!blocked){
+      const nr=r+dr*steps,nc=c+dc*steps;
+      if(nr>=0&&nr<sz&&nc>=0&&nc<sz&&!b[nr][nc])moves.push([nr,nc]);
     }
   }
   return moves;
 }
 
-function findCaps(b, player, sz) {
-  const res = [];
-  for (let r=0;r<sz;r++) for (let c=0;c<sz;c++)
-    if (b[r][c] && b[r][c].t==='cap' && b[r][c].p===player) res.push([r,c]);
+function findCaps(b,player,sz){
+  const res=[];
+  for(let r=0;r<sz;r++)for(let c=0;c<sz;c++)
+    if(b[r][c]&&b[r][c].t==='cap'&&b[r][c].p===player)res.push([r,c]);
   return res;
 }
 
-// ── Appliquer un mouvement ────────────────────────────────────────────────────
-function applyMove(from, to, isMine) {
-  const [fr,fc] = from, [tr,tc] = to;
-  const piece = gs.b[fr][fc];
-  if (!piece) return;
-
-  const target = gs.b[tr][tc];
-  const won = target && target.t==='bottle' && target.p !== piece.p;
-
-  gs.b[tr][tc] = piece;
-  gs.b[fr][fc] = null;
-  sel = null;
-
-  if (isMine) send({ t:'move', from, to });
-
-  if (won) {
+// ── Mouvement ─────────────────────────────────────────────────────────────────
+function applyMove(from,to,isMine){
+  const[fr,fc]=from,[tr,tc]=to;
+  const piece=gs.b[fr][fc];
+  if(!piece)return;
+  const target=gs.b[tr][tc];
+  const won=target&&target.t==='bottle'&&target.p!==piece.p;
+  gs.b[tr][tc]=piece;
+  gs.b[fr][fc]=null;
+  sel=null;
+  if(isMine)send({t:'move',from,to});
+  if(won){
     renderBoard();
-    endGame(piece.p, gs.names[piece.p]+' a recouvert la bouteille de '+gs.names[piece.p==='p1'?'p2':'p1']+' !');
+    endGame(piece.p,gs.names[piece.p]+' a recouvert la bouteille de '+gs.names[piece.p==='p1'?'p2':'p1']+' !');
     return;
   }
-
-  gs.turn = gs.turn === 'p1' ? 'p2' : 'p1';
-  renderBoard();
-  updateUI();
-}
-
-// ── Clics ─────────────────────────────────────────────────────────────────────
-function onCapClick(r, c) {
-  if (!isMyTurn() || gs.over) return;
-  sel = (sel && sel[0]===r && sel[1]===c) ? null : [r,c];
+  gs.turn=gs.turn==='p1'?'p2':'p1';
   renderBoard(); updateUI();
 }
 
-function onCellClick(r, c) {
-  if (!isMyTurn() || gs.over) return;
-  if (sel) {
-    const vm = validMoves(gs.b, sel[0], sel[1], gs.turn, gs.sz);
-    if (vm.some(([mr,mc]) => mr===r && mc===c)) {
-      applyMove(sel, [r,c], true);
-      return;
-    }
-  }
-  const piece = gs.b[r][c];
-  if (piece && piece.t==='cap' && piece.p===myRole) {
-    sel = [r,c];
-  } else {
-    sel = null;
-  }
+function onCapClick(r,c){
+  if(!isMyTurn()||gs.over)return;
+  sel=(sel&&sel[0]===r&&sel[1]===c)?null:[r,c];
   renderBoard(); updateUI();
 }
 
-// ── Fin de partie ─────────────────────────────────────────────────────────────
-function endGame(winner, msg) {
-  if (!gs || gs.over) return;
-  gs.over = true; gs.winner = winner;
-  setTimeout(() => {
-    document.getElementById('game-area').style.display  = 'none';
-    document.getElementById('s-gameover').style.display = 'block';
-    document.getElementById('winner-text').textContent  = winner===myRole ? '🏆 Victoire !' : '😞 Défaite';
-    document.getElementById('go-msg').textContent = msg;
-  }, 600);
+function onCellClick(r,c){
+  if(!isMyTurn()||gs.over)return;
+  if(sel){
+    const vm=validMoves(gs.b,sel[0],sel[1],gs.turn,gs.sz);
+    if(vm.some(([mr,mc])=>mr===r&&mc===c)){applyMove(sel,[r,c],true);return;}
+  }
+  const piece=gs.b[r][c];
+  if(piece&&piece.t==='cap'&&piece.p===myRole){sel=[r,c];}
+  else{sel=null;}
+  renderBoard(); updateUI();
 }
 
-function abandon() {
-  if (!confirm('Abandonner la partie ?')) return;
-  send({ t:'abandon' });
-  endGame(myRole==='p1' ? 'p2' : 'p1', 'Tu as abandonné.');
+// ── Fin ───────────────────────────────────────────────────────────────────────
+function endGame(winner,msg){
+  if(!gs||gs.over)return;
+  gs.over=true; gs.winner=winner;
+  setTimeout(()=>{
+    document.getElementById('game-area').style.display='none';
+    document.getElementById('s-gameover').style.display='block';
+    document.getElementById('winner-text').textContent=winner===myRole?'🏆 Victoire !':'😞 Défaite';
+    document.getElementById('go-msg').textContent=msg;
+  },600);
 }
 
-function backLobby() {
-  document.getElementById('s-gameover').style.display = 'none';
-  document.getElementById('s-lobby').style.display    = 'block';
-  document.getElementById('tab-create').style.display = 'block';
-  document.getElementById('tab-join').style.display   = 'none';
-  document.getElementById('tab-btn-create').classList.add('active');
-  document.getElementById('tab-btn-join').classList.remove('active');
-  document.getElementById('c-err').textContent = '';
-  document.getElementById('j-err').textContent = '';
-  if (peer) { peer.destroy(); peer = null; }
+function abandon(){
+  if(!confirm('Abandonner la partie ?'))return;
+  send({t:'abandon'});
+  endGame(myRole==='p1'?'p2':'p1','Tu as abandonné.');
+}
+
+function backLobby(){
+  document.getElementById('s-gameover').style.display='none';
+  document.getElementById('s-lobby').style.display='block';
+  showTab('create');
+  document.getElementById('c-err').textContent='';
+  document.getElementById('j-err').textContent='';
+  if(peer){peer.destroy();peer=null;}
   conn=null; gs=null; sel=null; myRole=null;
 }
 </script>
