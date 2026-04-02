@@ -119,6 +119,9 @@ input[type=text]{
   background:rgba(39,174,96,.25);border:2px solid rgba(39,174,96,.6);
   pointer-events:none;
 }
+.cell.blocked-marker{
+  box-shadow:inset 0 0 0 3px rgba(192,57,43,.5);
+}
 
 /* PIECES */
 .piece{
@@ -158,6 +161,9 @@ input[type=text]{
   display:flex;align-items:center;justify-content:center;
   border:1.5px solid var(--dark);
 }
+.piece.cap .badge.zero{
+  background:#888;color:#333;
+}
 .piece.bottle{
   width:70%;height:70%;border-radius:50%;
   display:flex;align-items:center;justify-content:center;
@@ -181,7 +187,7 @@ input[type=text]{
 .gameover-overlay{
   display:none;
   position:absolute;top:0;left:0;right:0;bottom:0;
-  background:rgba(0,0,0,.7);
+  background:rgba(0,0,0,.75);
   border-radius:8px;
   flex-direction:column;align-items:center;justify-content:center;
   z-index:10;
@@ -267,8 +273,8 @@ input[type=text]{
       <ul>
         <li>On ne déplace que ses <strong>capsules</strong> (pas la bouteille)</li>
         <li>La capsule se déplace en <strong>ligne droite</strong> (horizontale, verticale ou diagonale)</li>
-        <li>Le nombre de cases à parcourir = <strong>nombre de capsules adjacentes</strong> (8 directions) à la capsule au moment du départ</li>
-        <li>Une capsule <strong>sans voisin adjacent ne peut pas bouger</strong></li>
+        <li>Le nombre de cases = <strong>nombre de capsules adjacentes</strong> (8 directions), peu importe leur couleur</li>
+        <li>Une capsule <strong>sans aucun voisin (0) ne peut pas bouger</strong></li>
       </ul>
 
       <h3>🚫 Obstacles</h3>
@@ -323,7 +329,12 @@ input[type=text]{
 <script>
 /* ===== TABS ===== */
 function showTab(id){
-  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',b.textContent.toLowerCase().includes(id.slice(0,4))));
+  document.querySelectorAll('.tab-btn').forEach(b=>{
+    const match = (id==='create'&&b.textContent==='Créer')
+      ||(id==='join'&&b.textContent==='Rejoindre')
+      ||(id==='rules'&&b.textContent==='Règles');
+    b.classList.toggle('active',match);
+  });
   document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
   document.getElementById('tab-'+id).classList.add('active');
 }
@@ -349,10 +360,23 @@ function handleData(raw){
     gs=d.gs;
     startUI();
   }else if(d.t==='move'){
-    applyMove(d.fr,d.fc,d.tr,d.tc);
+    // Validate the move on our side too
+    if(isMoveValid(d.fr,d.fc,d.tr,d.tc)){
+      applyMove(d.fr,d.fc,d.tr,d.tc);
+    }else{
+      console.warn('Received invalid move, ignoring:',d);
+    }
   }else if(d.t==='abandon'){
     endGame(myRole, opName+' a abandonné.');
   }
+}
+
+/* Validate a move is legal on current board */
+function isMoveValid(fr,fc,tr,tc){
+  const piece=gs.board[fr][fc];
+  if(!piece||piece.t!=='cap')return false;
+  const moves=getValidMoves(gs.board,fr,fc);
+  return moves.some(m=>m[0]===tr&&m[1]===tc);
 }
 
 /* CREATE */
@@ -386,7 +410,11 @@ function createGame(){
         send({t:'start',gs:gs,name:myName});
         startUI();
       }else if(d.t==='move'){
-        applyMove(d.fr,d.fc,d.tr,d.tc);
+        if(isMoveValid(d.fr,d.fc,d.tr,d.tc)){
+          applyMove(d.fr,d.fc,d.tr,d.tc);
+        }else{
+          console.warn('Received invalid move from opponent, ignoring:',d);
+        }
       }else if(d.t==='abandon'){
         endGame(myRole, opName+' a abandonné.');
       }
@@ -427,11 +455,13 @@ function joinGame(){
 /* ===== GAME STATE ===== */
 function initBoard(){
   const board=Array.from({length:ROWS},()=>Array(COLS).fill(null));
+  // P2 (noires) en haut-gauche
   board[0][0]={t:'bottle',p:'p2'};
   board[0][3]={t:'cap',p:'p2'};
   board[1][2]={t:'cap',p:'p2'};
   board[2][1]={t:'cap',p:'p2'};
   board[3][0]={t:'cap',p:'p2'};
+  // P1 (blanches) en bas-droite
   board[5][5]={t:'bottle',p:'p1'};
   board[2][5]={t:'cap',p:'p1'};
   board[3][4]={t:'cap',p:'p1'};
@@ -458,7 +488,7 @@ function getValidMoves(board,r,c){
   const piece=board[r][c];
   if(!piece||piece.t!=='cap')return[];
   const adj=countAdj(board,r,c);
-  // 0 adjacent = cannot move
+  // 0 voisin = ne peut pas bouger
   if(adj===0)return[];
   const dist=adj;
   const moves=[];
@@ -468,19 +498,23 @@ function getValidMoves(board,r,c){
     let blocked=false;
     for(let step=1;step<=dist;step++){
       const nr=r+dr*step,nc=c+dc*step;
+      // Hors plateau
       if(nr<0||nr>=ROWS||nc<0||nc>=COLS){blocked=true;break;}
       const target=board[nr][nc];
       if(step<dist){
+        // Cases intermédiaires : doivent être vides
+        // (pas de capsule, pas de bouteille propre, pas de bouteille adverse)
         if(target){blocked=true;break;}
       }else{
+        // Case d'arrivée
         if(target){
-          if(target.t==='cap'){blocked=true;break;}
-          if(target.t==='bottle'&&target.p===piece.p){blocked=true;break;}
+          if(target.t==='cap'){blocked=true;break;} // Pas sur une capsule
+          if(target.t==='bottle'&&target.p===piece.p){blocked=true;break;} // Pas sur sa propre bouteille
           if(target.t==='bottle'&&target.p!==piece.p){
-            moves.push([nr,nc]);break;
+            moves.push([nr,nc]); // Sur la bouteille adverse = victoire
           }
         }else{
-          moves.push([nr,nc]);
+          moves.push([nr,nc]); // Case vide
         }
       }
     }
@@ -495,7 +529,8 @@ function checkBlocked(){
   let hasMove=false;
   for(let r=0;r<ROWS&&!hasMove;r++){
     for(let c=0;c<COLS&&!hasMove;c++){
-      if(gs.board[r][c]&&gs.board[r][c].t==='cap'&&gs.board[r][c].p===turn){
+      const cell=gs.board[r][c];
+      if(cell&&cell.t==='cap'&&cell.p===turn){
         if(getValidMoves(gs.board,r,c).length>0)hasMove=true;
       }
     }
@@ -504,7 +539,8 @@ function checkBlocked(){
     const loser=turn;
     const winner=turn==='p1'?'p2':'p1';
     const wName=(winner===myRole)?myName:opName;
-    endGame(winner,wName+' gagne ! '+((loser===myRole)?myName:opName)+' est bloqué.');
+    const lName=(loser===myRole)?myName:opName;
+    endGame(winner,wName+' gagne ! '+lName+' est bloqué.');
   }
 }
 
@@ -523,12 +559,14 @@ function render(){
   const boardEl=document.getElementById('board');
   boardEl.innerHTML='';
 
-  const isMyTurn=gs.turn===myRole;
+  const isMyTurn=gs.turn===myRole&&!gs.over;
   const turnEl=document.getElementById('turn-info');
   if(gs.over){
     turnEl.textContent='Partie terminée';
+    turnEl.style.animation='none';
   }else{
     turnEl.textContent=isMyTurn?'À votre tour !':'Tour adverse…';
+    turnEl.style.animation=isMyTurn?'pulse 1.5s infinite':'none';
   }
 
   const tagP1=document.getElementById('tag-p1');
@@ -542,49 +580,49 @@ function render(){
     isMyTurn?'Sélectionne une capsule':'Attends ton tour';
 
   let validMoves=[];
-  if(sel){
+  if(sel&&!gs.over){
     validMoves=getValidMoves(gs.board,sel[0],sel[1]);
   }
 
   for(let r=0;r<ROWS;r++){
     for(let c=0;c<COLS;c++){
-      const cell=document.createElement('div');
-      cell.className='cell '+((r+c)%2===0?'light':'dark');
-      cell.dataset.r=r;cell.dataset.c=c;
-      cell.addEventListener('click',()=>onCellClick(r,c));
+      const cellEl=document.createElement('div');
+      cellEl.className='cell '+((r+c)%2===0?'light':'dark');
+      cellEl.dataset.r=r;cellEl.dataset.c=c;
+      cellEl.addEventListener('click',()=>onCellClick(r,c));
 
-      if(sel&&sel[0]===r&&sel[1]===c)cell.classList.add('selected');
+      if(sel&&sel[0]===r&&sel[1]===c)cellEl.classList.add('selected');
 
       const isValid=validMoves.some(m=>m[0]===r&&m[1]===c);
       if(isValid){
         const target=gs.board[r][c];
         if(target&&target.t==='bottle'){
-          cell.classList.add('capture-target');
+          cellEl.classList.add('capture-target');
         }else{
-          cell.classList.add('movable');
+          cellEl.classList.add('movable');
         }
       }
 
       const p=gs.board[r][c];
       if(p){
-        const piece=document.createElement('div');
+        const pieceEl=document.createElement('div');
         if(p.t==='cap'){
-          piece.className='piece cap '+p.p;
+          pieceEl.className='piece cap '+p.p;
           const inner=document.createElement('div');
           inner.className='inner';
-          piece.appendChild(inner);
+          pieceEl.appendChild(inner);
           const adj=countAdj(gs.board,r,c);
           const badge=document.createElement('div');
-          badge.className='badge';
+          badge.className='badge'+(adj===0?' zero':'');
           badge.textContent=adj;
-          piece.appendChild(badge);
+          pieceEl.appendChild(badge);
         }else{
-          piece.className='piece bottle '+p.p;
-          piece.textContent='🍾';
+          pieceEl.className='piece bottle '+p.p;
+          pieceEl.textContent='🍾';
         }
-        cell.appendChild(piece);
+        cellEl.appendChild(pieceEl);
       }
-      boardEl.appendChild(cell);
+      boardEl.appendChild(cellEl);
     }
   }
 }
@@ -605,16 +643,19 @@ function onCellClick(r,c){
       applyMove(fr,fc,r,c);
       return;
     }
+    // Clic sur une autre de ses capsules → re-sélectionner
     if(cell&&cell.t==='cap'&&cell.p===myRole){
       sel=[r,c];
       render();
       return;
     }
+    // Clic ailleurs → déselectionner
     sel=null;
     render();
     return;
   }
 
+  // Pas de sélection → sélectionner une capsule
   if(cell&&cell.t==='cap'&&cell.p===myRole){
     sel=[r,c];
     render();
@@ -625,8 +666,10 @@ function onCellClick(r,c){
 /* ===== APPLY MOVE ===== */
 function applyMove(fr,fc,tr,tc){
   const piece=gs.board[fr][fc];
+  if(!piece)return;
   const dest=gs.board[tr][tc];
 
+  // Victoire : capsule sur bouteille adverse
   if(dest&&dest.t==='bottle'&&dest.p!==piece.p){
     gs.board[tr][tc]=piece;
     gs.board[fr][fc]=null;
@@ -653,7 +696,6 @@ function endGame(winner,msg){
   gs.over=true;
   gs.winner=winner;
   render();
-  // Show overlay on top of the board
   document.getElementById('btn-abandon').style.display='none';
   setTimeout(()=>{
     const overlay=document.getElementById('go-overlay');
