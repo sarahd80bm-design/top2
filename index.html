@@ -93,7 +93,7 @@ input[type=text]{
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
 
 .board-wrap{
-  display:inline-block;padding:12px;
+  display:inline-block;padding:12px;position:relative;
   background:linear-gradient(145deg,#6b4c0a,#8B6914,#6b4c0a);
   border-radius:10px;border:3px solid var(--wood-dark);
   box-shadow:0 8px 32px rgba(0,0,0,.6);
@@ -177,6 +177,25 @@ input[type=text]{
 .controls{margin:14px 0;display:flex;justify-content:center;align-items:center;gap:14px}
 #status-text{font-style:italic;color:var(--wood-light);font-size:.95rem}
 
+/* GAME OVER OVERLAY */
+.gameover-overlay{
+  display:none;
+  position:absolute;top:0;left:0;right:0;bottom:0;
+  background:rgba(0,0,0,.7);
+  border-radius:8px;
+  flex-direction:column;align-items:center;justify-content:center;
+  z-index:10;
+}
+.gameover-overlay.show{display:flex}
+.gameover-overlay .go-title{
+  font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:.08em;
+  color:var(--gold);margin-bottom:6px;text-shadow:0 2px 10px rgba(0,0,0,.6);
+}
+.gameover-overlay .go-msg{
+  font-style:italic;color:var(--cream);margin-bottom:16px;
+  font-size:.95rem;text-align:center;padding:0 20px;
+}
+
 /* RULES */
 .rules{text-align:left;line-height:1.7;font-size:.95rem}
 .rules h3{color:var(--gold);font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.06em;margin:16px 0 6px}
@@ -185,14 +204,6 @@ input[type=text]{
 .rules li{margin:2px 0}
 .rules strong{color:var(--wood-light)}
 .rules .emoji{font-size:1.1em}
-
-/* GAME OVER */
-#s-gameover{display:none}
-#winner-text{
-  font-family:'Bebas Neue',sans-serif;font-size:2.4rem;letter-spacing:.08em;
-  color:var(--gold);margin-bottom:6px;
-}
-#go-msg{font-style:italic;color:var(--wood-light);margin-bottom:18px}
 </style>
 </head>
 <body>
@@ -248,8 +259,8 @@ input[type=text]{
       <ul>
         <li>Plateau <strong>6×6</strong> cases</li>
         <li>Chaque joueur a <strong>4 capsules</strong> et <strong>1 bouteille</strong></li>
-        <li><span class="emoji">⚪</span> Joueur 1 (blanc) : capsules blanches</li>
-        <li><span class="emoji">⚫</span> Joueur 2 (noir) : capsules noires</li>
+        <li><span class="emoji">⚪</span> Joueur 1 : capsules blanches</li>
+        <li><span class="emoji">⚫</span> Joueur 2 : capsules noires</li>
       </ul>
 
       <h3>♟️ Déplacement</h3>
@@ -257,7 +268,7 @@ input[type=text]{
         <li>On ne déplace que ses <strong>capsules</strong> (pas la bouteille)</li>
         <li>La capsule se déplace en <strong>ligne droite</strong> (horizontale, verticale ou diagonale)</li>
         <li>Le nombre de cases à parcourir = <strong>nombre de capsules adjacentes</strong> (8 directions) à la capsule au moment du départ</li>
-        <li>Une capsule sans voisin adjacent se déplace de <strong>1 case</strong></li>
+        <li>Une capsule <strong>sans voisin adjacent ne peut pas bouger</strong></li>
       </ul>
 
       <h3>🚫 Obstacles</h3>
@@ -283,7 +294,7 @@ input[type=text]{
       <span class="dot"></span>
       <span>
         <span class="player-name" id="name-p1">Joueur 1</span>
-        <span class="player-color">· capsules blanches</span>
+        <span class="player-color">· blanches</span>
       </span>
     </div>
     <div class="turn-info" id="turn-info">…</div>
@@ -291,24 +302,22 @@ input[type=text]{
       <span class="dot"></span>
       <span>
         <span class="player-name" id="name-p2">Joueur 2</span>
-        <span class="player-color">· capsules noires</span>
+        <span class="player-color">· noires</span>
       </span>
     </div>
   </div>
   <div class="board-wrap">
     <div class="board" id="board"></div>
+    <div class="gameover-overlay" id="go-overlay">
+      <div class="go-title" id="go-title"></div>
+      <div class="go-msg" id="go-msg"></div>
+      <button class="btn" onclick="backLobby()">Retour au lobby</button>
+    </div>
   </div>
   <div class="controls">
-    <button class="btn btn-danger" onclick="abandon()">Abandonner</button>
+    <button class="btn btn-danger" id="btn-abandon" onclick="abandon()">Abandonner</button>
     <span id="status-text">Sélectionne une capsule</span>
   </div>
-</div>
-
-<!-- GAME OVER -->
-<div class="screen" id="s-gameover" style="text-align:center">
-  <div id="winner-text"></div>
-  <div id="go-msg"></div>
-  <button class="btn" onclick="backLobby()">Retour au lobby</button>
 </div>
 
 <script>
@@ -449,7 +458,9 @@ function getValidMoves(board,r,c){
   const piece=board[r][c];
   if(!piece||piece.t!=='cap')return[];
   const adj=countAdj(board,r,c);
-  const dist=Math.max(1,adj);
+  // 0 adjacent = cannot move
+  if(adj===0)return[];
+  const dist=adj;
   const moves=[];
   const dirs=[[-1,0],[1,0],[0,-1],[0,1],[-1,-1],[-1,1],[1,-1],[1,1]];
 
@@ -520,7 +531,6 @@ function render(){
     turnEl.textContent=isMyTurn?'À votre tour !':'Tour adverse…';
   }
 
-  // Highlight active player tag
   const tagP1=document.getElementById('tag-p1');
   const tagP2=document.getElementById('tag-p2');
   tagP1.classList.toggle('active-turn',gs.turn==='p1'&&!gs.over);
@@ -566,7 +576,7 @@ function render(){
           const adj=countAdj(gs.board,r,c);
           const badge=document.createElement('div');
           badge.className='badge';
-          badge.textContent=Math.max(1,adj);
+          badge.textContent=adj;
           piece.appendChild(badge);
         }else{
           piece.className='piece bottle '+p.p;
@@ -643,11 +653,13 @@ function endGame(winner,msg){
   gs.over=true;
   gs.winner=winner;
   render();
+  // Show overlay on top of the board
+  document.getElementById('btn-abandon').style.display='none';
   setTimeout(()=>{
-    document.getElementById('game-area').style.display='none';
-    document.getElementById('s-gameover').style.display='block';
-    document.getElementById('winner-text').textContent=(winner===myRole)?'🏆 Victoire !':'😞 Défaite';
+    const overlay=document.getElementById('go-overlay');
+    document.getElementById('go-title').textContent=(winner===myRole)?'🏆 Victoire !':'😞 Défaite';
     document.getElementById('go-msg').textContent=msg;
+    overlay.classList.add('show');
   },800);
 }
 
@@ -660,7 +672,9 @@ function abandon(){
 
 /* ===== BACK TO LOBBY ===== */
 function backLobby(){
-  document.getElementById('s-gameover').style.display='none';
+  document.getElementById('game-area').style.display='none';
+  document.getElementById('go-overlay').classList.remove('show');
+  document.getElementById('btn-abandon').style.display='';
   document.getElementById('s-lobby').style.display='block';
   showTab('create');
   document.getElementById('c-err').textContent='';
