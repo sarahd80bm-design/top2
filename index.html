@@ -26,7 +26,6 @@ header h1{
   text-shadow:0 0 30px rgba(212,160,23,.4),2px 2px 0 var(--wood-dark);line-height:1;
 }
 header p{font-style:italic;color:#a08860;font-size:.9rem;margin-top:2px}
-
 .screen{
   background:rgba(255,255,255,.04);border:1px solid rgba(212,160,23,.25);
   border-radius:12px;padding:24px;margin:12px auto;max-width:560px;width:92%;
@@ -41,7 +40,6 @@ header p{font-style:italic;color:#a08860;font-size:.9rem;margin-top:2px}
 .tab-btn.active{background:var(--gold);color:var(--dark);font-weight:600}
 .tab-content{display:none}
 .tab-content.active{display:block}
-
 label{display:block;margin:10px 0 4px;color:var(--wood-light);font-weight:600;font-size:.95rem}
 input[type=text]{
   width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--wood);
@@ -74,14 +72,22 @@ input[type=text]{
 }
 .player-tag{
   display:flex;align-items:center;gap:8px;
-  background:rgba(255,255,255,.06);border:1px solid rgba(212,160,23,.2);
+  background:rgba(255,255,255,.06);border:2px solid rgba(212,160,23,.2);
   border-radius:20px;padding:4px 14px 4px 8px;
+  transition:border-color .3s, box-shadow .3s;
+}
+.player-tag.active-turn{
+  border-color:var(--gold);
+  box-shadow:0 0 12px rgba(212,160,23,.4);
 }
 .player-tag .dot{width:14px;height:14px;border-radius:50%;display:inline-block}
-.player-tag.p1 .dot{background:var(--red)}
-.player-tag.p2 .dot{background:#222}
+.player-tag.p1 .dot{background:var(--cream);border:2px solid #8a7e6a}
+.player-tag.p2 .dot{background:#222;border:2px solid #555}
+.player-name{font-weight:600}
+.player-color{font-size:.75rem;color:#a08860;margin-left:2px}
 .turn-info{
-  font-style:italic;color:var(--gold);font-size:.95rem;
+  font-style:italic;color:var(--gold);font-size:1.15rem;
+  font-weight:600;
   animation:pulse 1.5s infinite;
 }
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
@@ -152,7 +158,6 @@ input[type=text]{
   display:flex;align-items:center;justify-content:center;
   border:1.5px solid var(--dark);
 }
-
 .piece.bottle{
   width:70%;height:70%;border-radius:50%;
   display:flex;align-items:center;justify-content:center;
@@ -243,8 +248,8 @@ input[type=text]{
       <ul>
         <li>Plateau <strong>6×6</strong> cases</li>
         <li>Chaque joueur a <strong>4 capsules</strong> et <strong>1 bouteille</strong></li>
-        <li><span class="emoji">⚪</span> Joueur 1 (blanc) : capsules en ligne du bas (colonnes 2-5), bouteille coin bas-gauche</li>
-        <li><span class="emoji">⚫</span> Joueur 2 (noir) : capsules en ligne du haut (colonnes 1-4), bouteille coin haut-droit</li>
+        <li><span class="emoji">⚪</span> Joueur 1 (blanc) : capsules blanches</li>
+        <li><span class="emoji">⚫</span> Joueur 2 (noir) : capsules noires</li>
       </ul>
 
       <h3>♟️ Déplacement</h3>
@@ -274,9 +279,21 @@ input[type=text]{
 <!-- GAME -->
 <div id="game-area">
   <div class="player-bar">
-    <div class="player-tag p1"><span class="dot"></span><span id="name-p1">Joueur 1</span></div>
+    <div class="player-tag p1" id="tag-p1">
+      <span class="dot"></span>
+      <span>
+        <span class="player-name" id="name-p1">Joueur 1</span>
+        <span class="player-color">· capsules blanches</span>
+      </span>
+    </div>
     <div class="turn-info" id="turn-info">…</div>
-    <div class="player-tag p2"><span class="dot"></span><span id="name-p2">Joueur 2</span></div>
+    <div class="player-tag p2" id="tag-p2">
+      <span class="dot"></span>
+      <span>
+        <span class="player-name" id="name-p2">Joueur 2</span>
+        <span class="player-color">· capsules noires</span>
+      </span>
+    </div>
   </div>
   <div class="board-wrap">
     <div class="board" id="board"></div>
@@ -339,7 +356,6 @@ function createGame(){
   const code=genCode();
   document.getElementById('c-code').textContent=code;
   document.getElementById('c-waiting').style.display='block';
-
   peer=new Peer('topcap-'+code,{debug:0});
   peer.on('open',()=>{
     document.getElementById('c-status').textContent='En attente d\'un joueur…';
@@ -351,17 +367,20 @@ function createGame(){
   peer.on('connection',c=>{
     conn=c;
     document.getElementById('c-status').textContent='Joueur connecté !';
-    conn.on('data',handleData);
     conn.on('open',()=>{
       gs=initBoard();
-      conn.on('data',raw=>{
-        const d=JSON.parse(raw);
-        if(d.t==='hello'){
-          opName=d.name;
-          send({t:'start',gs:gs,name:myName});
-          startUI();
-        }else{handleData(raw);}
-      });
+    });
+    conn.on('data',raw=>{
+      const d=JSON.parse(raw);
+      if(d.t==='hello'){
+        opName=d.name;
+        send({t:'start',gs:gs,name:myName});
+        startUI();
+      }else if(d.t==='move'){
+        applyMove(d.fr,d.fc,d.tr,d.tc);
+      }else if(d.t==='abandon'){
+        endGame(myRole, opName+' a abandonné.');
+      }
     });
   });
 }
@@ -377,15 +396,14 @@ function joinGame(){
   document.getElementById('j-status').style.display='block';
   document.getElementById('j-status-text').textContent='Connexion…';
   myName=name;myRole='p2';
-
   peer=new Peer(null,{debug:0});
   peer.on('open',()=>{
     conn=peer.connect('topcap-'+code,{reliable:true});
     conn.on('open',()=>{
       document.getElementById('j-status-text').textContent='Connecté !';
-      conn.on('data',handleData);
       send({t:'hello',name:myName});
     });
+    conn.on('data',handleData);
     conn.on('error',()=>{
       document.getElementById('j-err').textContent='Impossible de rejoindre';
       document.getElementById('j-btn').disabled=false;
@@ -398,15 +416,13 @@ function joinGame(){
 }
 
 /* ===== GAME STATE ===== */
-  function initBoard(){
+function initBoard(){
   const board=Array.from({length:ROWS},()=>Array(COLS).fill(null));
-  // P2 (noir) : bouteille (0,0), capsules en diagonale
   board[0][0]={t:'bottle',p:'p2'};
   board[0][3]={t:'cap',p:'p2'};
   board[1][2]={t:'cap',p:'p2'};
   board[2][1]={t:'cap',p:'p2'};
   board[3][0]={t:'cap',p:'p2'};
-  // P1 (blanc) : bouteille (5,5), capsules en diagonale
   board[5][5]={t:'bottle',p:'p1'};
   board[2][5]={t:'cap',p:'p1'};
   board[3][4]={t:'cap',p:'p1'};
@@ -414,7 +430,6 @@ function joinGame(){
   board[5][2]={t:'cap',p:'p1'};
   return{board:board,turn:'p1',over:false,winner:null};
 }
-
 
 /* ===== ADJACENCY COUNT ===== */
 function countAdj(board,r,c){
@@ -445,16 +460,11 @@ function getValidMoves(board,r,c){
       if(nr<0||nr>=ROWS||nc<0||nc>=COLS){blocked=true;break;}
       const target=board[nr][nc];
       if(step<dist){
-        // Cases intermédiaires : rien ne peut être traversé
         if(target){blocked=true;break;}
       }else{
-        // Case finale
         if(target){
-          // Capsule (amie ou ennemie) → interdit
           if(target.t==='cap'){blocked=true;break;}
-          // Sa propre bouteille → interdit
           if(target.t==='bottle'&&target.p===piece.p){blocked=true;break;}
-          // Bouteille adverse → victoire (autorisé)
           if(target.t==='bottle'&&target.p!==piece.p){
             moves.push([nr,nc]);break;
           }
@@ -502,20 +512,25 @@ function render(){
   const boardEl=document.getElementById('board');
   boardEl.innerHTML='';
 
-  // Turn info
   const isMyTurn=gs.turn===myRole;
   const turnEl=document.getElementById('turn-info');
   if(gs.over){
     turnEl.textContent='Partie terminée';
   }else{
-    turnEl.textContent=isMyTurn?'C\'est ton tour !':'Tour adverse…';
+    turnEl.textContent=isMyTurn?'À votre tour !':'Tour adverse…';
   }
+
+  // Highlight active player tag
+  const tagP1=document.getElementById('tag-p1');
+  const tagP2=document.getElementById('tag-p2');
+  tagP1.classList.toggle('active-turn',gs.turn==='p1'&&!gs.over);
+  tagP2.classList.toggle('active-turn',gs.turn==='p2'&&!gs.over);
+
   document.getElementById('status-text').textContent=
     gs.over?'Partie terminée':
     sel?'Choisis la destination':
     isMyTurn?'Sélectionne une capsule':'Attends ton tour';
 
-  // Compute valid moves for selected piece
   let validMoves=[];
   if(sel){
     validMoves=getValidMoves(gs.board,sel[0],sel[1]);
@@ -528,10 +543,8 @@ function render(){
       cell.dataset.r=r;cell.dataset.c=c;
       cell.addEventListener('click',()=>onCellClick(r,c));
 
-      // Selected
       if(sel&&sel[0]===r&&sel[1]===c)cell.classList.add('selected');
 
-      // Movable highlight
       const isValid=validMoves.some(m=>m[0]===r&&m[1]===c);
       if(isValid){
         const target=gs.board[r][c];
@@ -542,7 +555,6 @@ function render(){
         }
       }
 
-      // Piece
       const p=gs.board[r][c];
       if(p){
         const piece=document.createElement('div');
@@ -551,7 +563,6 @@ function render(){
           const inner=document.createElement('div');
           inner.className='inner';
           piece.appendChild(inner);
-          // Badge: adj count
           const adj=countAdj(gs.board,r,c);
           const badge=document.createElement('div');
           badge.className='badge';
@@ -563,7 +574,6 @@ function render(){
         }
         cell.appendChild(piece);
       }
-
       boardEl.appendChild(cell);
     }
   }
@@ -576,7 +586,6 @@ function onCellClick(r,c){
 
   const cell=gs.board[r][c];
 
-  // If a piece is selected
   if(sel){
     const moves=getValidMoves(gs.board,sel[0],sel[1]);
     const valid=moves.some(m=>m[0]===r&&m[1]===c);
@@ -586,19 +595,16 @@ function onCellClick(r,c){
       applyMove(fr,fc,r,c);
       return;
     }
-    // Click on another own cap → reselect
     if(cell&&cell.t==='cap'&&cell.p===myRole){
       sel=[r,c];
       render();
       return;
     }
-    // Deselect
     sel=null;
     render();
     return;
   }
 
-  // Select own cap
   if(cell&&cell.t==='cap'&&cell.p===myRole){
     sel=[r,c];
     render();
@@ -611,7 +617,6 @@ function applyMove(fr,fc,tr,tc){
   const piece=gs.board[fr][fc];
   const dest=gs.board[tr][tc];
 
-  // Victory check
   if(dest&&dest.t==='bottle'&&dest.p!==piece.p){
     gs.board[tr][tc]=piece;
     gs.board[fr][fc]=null;
